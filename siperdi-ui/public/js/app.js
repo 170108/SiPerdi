@@ -1,5 +1,9 @@
+// ================================
+// DOM References
+// ================================
 const modal = document.getElementById("auth-modal");
 const openButtons = document.querySelectorAll("[data-open-auth]");
+const loginNameButtons = document.querySelectorAll("[data-login-name]");
 const closeButtons = document.querySelectorAll("[data-close-auth]");
 const tabButtons = document.querySelectorAll("[data-auth-tab]");
 const panels = document.querySelectorAll("[data-auth-panel]");
@@ -78,6 +82,9 @@ const catalogSearch = document.querySelector("[data-catalog-search]");
 const catalogCount = document.querySelector("[data-catalog-count]");
 const catalogEmpty = document.querySelector("[data-catalog-empty]");
 
+// ================================
+// Konstanta & Konfigurasi
+// ================================
 const STORAGE_KEY = "siperdi_users";
 const SESSION_KEY = "siperdi_session";
 const LOAN_KEY = "siperdi_loans";
@@ -85,6 +92,48 @@ const FINE_PER_DAY = 1000;
 const ADMIN_CODE = "024";
 const THEME_KEY = "siperdi_theme";
 const THEME_OPTIONS = ["default", "light", "dark"];
+
+// Simpan label default tombol login agar bisa dikembalikan saat logout.
+loginNameButtons.forEach((btn) => {
+  if (!btn.dataset.loginDefault) {
+    btn.dataset.loginDefault = btn.textContent.trim();
+  }
+});
+
+// ================================
+// Utilitas Path & Proteksi Halaman
+// ================================
+const getBasePath = () => {
+  const path = window.location.pathname.replace(/\\\\/g, "/");
+  if (path.includes("/Admin/") || path.includes("/Siswa/")) {
+    return "..";
+  }
+  return ".";
+};
+
+const resolvePath = (relativePath) => {
+  return `${getBasePath()}/${relativePath}`;
+};
+
+const getRoleHome = (role) => {
+  if (role === "admin") return resolvePath("Admin/dashboard.html");
+  return resolvePath("Siswa/dashboard.html");
+};
+
+const guardPageAccess = () => {
+  const pageRole = document.body?.dataset.pageRole;
+  if (!pageRole || pageRole === "public") return true;
+  const session = getSession();
+  if (!session) {
+    window.location.href = resolvePath("index.html");
+    return false;
+  }
+  if (session.role !== pageRole) {
+    window.location.href = getRoleHome(session.role);
+    return false;
+  }
+  return true;
+};
 
 const createLoanId = () => {
   return `LN${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
@@ -326,6 +375,13 @@ const syncThemeForSession = (user) => {
   });
 };
 
+const getProfileLink = (user) => {
+  if (!user) return null;
+  const target = user.role === "admin" ? "Admin/profil.html" : "Siswa/profil.html";
+  return resolvePath(target);
+};
+
+// Render tampilan sesi + menu berdasarkan role.
 const renderSession = (user) => {
   const loggedIn = Boolean(user);
   const isAdmin = user?.role === "admin";
@@ -335,11 +391,28 @@ const renderSession = (user) => {
   });
   sessionNames.forEach((label) => {
     const roleLabel = user?.role === "admin" ? "Admin" : "Siswa";
-    label.textContent = loggedIn ? `Halo, ${roleLabel}` : "Halo, Siswa";
+    const displayName = user?.name || roleLabel;
+    label.textContent = loggedIn ? `Halo, ${displayName}` : "Halo, Siswa";
   });
   openButtons.forEach((btn) => {
     if (!btn.hasAttribute("data-hide-when-auth")) return;
-    btn.style.display = loggedIn ? "none" : "inline-flex";
+    const isLoginName = btn.hasAttribute("data-login-name");
+    btn.style.display = loggedIn && !isLoginName ? "none" : "inline-flex";
+  });
+  loginNameButtons.forEach((btn) => {
+    const defaultLabel = btn.dataset.loginDefault || btn.textContent.trim();
+    if (loggedIn) {
+      btn.textContent = user?.name || defaultLabel;
+      const profileLink = getProfileLink(user);
+      if (profileLink) {
+        btn.dataset.profileLink = profileLink;
+      }
+    } else {
+      btn.textContent = defaultLabel;
+      if (btn.dataset.profileLink) {
+        delete btn.dataset.profileLink;
+      }
+    }
   });
   if (adminLink) {
     adminLink.classList.toggle("hidden", !loggedIn || user?.role !== "admin");
@@ -478,13 +551,37 @@ const setupCatalogSearch = () => {
 };
 
 const renderLoans = (user) => {
-  if (!loanList || !loanEmpty) return;
-
   const userLoans = user ? getUserLoans(user) : [];
-  loanList.innerHTML = "";
 
+  let dueSoonCount = 0;
+  let totalFineValue = 0;
+  let nextLoan = null;
+  let activeCount = 0;
+
+  if (user) {
+    userLoans.forEach((loan) => {
+      const meta = buildLoanMeta(loan);
+      if (!meta) return;
+
+      if (meta.returnStatus !== "approved") {
+        activeCount += 1;
+        if (!nextLoan || meta.dueDate < nextLoan.dueDate) {
+          nextLoan = { loan, ...meta };
+        }
+
+        if (meta.daysLeft >= 0 && meta.daysLeft <= 3) {
+          dueSoonCount += 1;
+        }
+
+        if (meta.daysLeft < 0) {
+          totalFineValue += Math.abs(meta.daysLeft) * FINE_PER_DAY;
+        }
+      }
+    });
+  }
+
+  // Ringkasan peminjaman (tetap di-render walau daftar tidak ada).
   if (!user) {
-    loanEmpty.classList.add("show");
     if (loanActive) loanActive.textContent = "0";
     if (loanDue) loanDue.textContent = "0";
     if (totalFine) totalFine.textContent = formatCurrency(0);
@@ -492,65 +589,49 @@ const renderLoans = (user) => {
       nextDue.className = "notice";
       nextDue.textContent = "Login untuk melihat notifikasi.";
     }
-    renderHeroLoans(null, []);
-    renderStudentDashboard(null, []);
-    return;
-  }
-
-  let dueSoonCount = 0;
-  let totalFineValue = 0;
-  let nextLoan = null;
-  let activeCount = 0;
-
-  userLoans.forEach((loan) => {
-    const meta = buildLoanMeta(loan);
-    if (!meta) return;
-
-    if (meta.returnStatus !== "approved") {
-      activeCount += 1;
-      if (!nextLoan || meta.dueDate < nextLoan.dueDate) {
-        nextLoan = { loan, ...meta };
-      }
-
-      if (meta.daysLeft >= 0 && meta.daysLeft <= 3) {
-        dueSoonCount += 1;
-      }
-
-      if (meta.daysLeft < 0) {
-        totalFineValue += Math.abs(meta.daysLeft) * FINE_PER_DAY;
+  } else {
+    if (loanActive) loanActive.textContent = String(activeCount);
+    if (loanDue) loanDue.textContent = String(dueSoonCount);
+    if (totalFine) totalFine.textContent = formatCurrency(totalFineValue);
+    if (nextDue) {
+      nextDue.className = "notice";
+      if (!nextLoan) {
+        nextDue.textContent = "Belum ada peminjaman aktif.";
+      } else if (nextLoan.daysLeft < 0) {
+        nextDue.classList.add("danger");
+        nextDue.textContent = `${nextLoan.loan.judul} terlambat ${Math.abs(nextLoan.daysLeft)} hari.`;
+      } else if (nextLoan.daysLeft <= 3) {
+        nextDue.classList.add("warn");
+        nextDue.textContent = `${nextLoan.loan.judul} jatuh tempo ${formatDate(nextLoan.dueDate)} (sisa ${nextLoan.daysLeft} hari).`;
+      } else {
+        nextDue.textContent = `${nextLoan.loan.judul} jatuh tempo ${formatDate(nextLoan.dueDate)} (sisa ${nextLoan.daysLeft} hari).`;
       }
     }
+  }
 
-    const row = document.createElement("div");
-    row.className = "table-row";
-    const actionHtml = buildReturnAction(loan, meta);
-    row.innerHTML = `
-      <span>${loan.judul}</span>
-      <span>${formatDate(meta.startDate)}</span>
-      <span>${formatDate(meta.dueDate)}</span>
-      <span class="badge ${meta.badgeClass}">${meta.statusLabel}</span>
-      <span class="loan-action">${actionHtml}</span>
-    `;
-    loanList.appendChild(row);
-  });
-
-  loanEmpty.classList.toggle("show", userLoans.length === 0);
-  if (loanActive) loanActive.textContent = String(activeCount);
-  if (loanDue) loanDue.textContent = String(dueSoonCount);
-  if (totalFine) totalFine.textContent = formatCurrency(totalFineValue);
-
-  if (nextDue) {
-    nextDue.className = "notice";
-    if (!nextLoan) {
-      nextDue.textContent = "Belum ada peminjaman aktif.";
-    } else if (nextLoan.daysLeft < 0) {
-      nextDue.classList.add("danger");
-      nextDue.textContent = `${nextLoan.loan.judul} terlambat ${Math.abs(nextLoan.daysLeft)} hari.`;
-    } else if (nextLoan.daysLeft <= 3) {
-      nextDue.classList.add("warn");
-      nextDue.textContent = `${nextLoan.loan.judul} jatuh tempo ${formatDate(nextLoan.dueDate)} (sisa ${nextLoan.daysLeft} hari).`;
+  // Daftar peminjaman (opsional).
+  if (loanList && loanEmpty) {
+    loanList.innerHTML = "";
+    if (!user) {
+      loanEmpty.classList.add("show");
     } else {
-      nextDue.textContent = `${nextLoan.loan.judul} jatuh tempo ${formatDate(nextLoan.dueDate)} (sisa ${nextLoan.daysLeft} hari).`;
+      userLoans.forEach((loan) => {
+        const meta = buildLoanMeta(loan);
+        if (!meta) return;
+
+        const row = document.createElement("div");
+        row.className = "table-row";
+        const actionHtml = buildReturnAction(loan, meta);
+        row.innerHTML = `
+          <span>${loan.judul}</span>
+          <span>${formatDate(meta.startDate)}</span>
+          <span>${formatDate(meta.dueDate)}</span>
+          <span class="badge ${meta.badgeClass}">${meta.statusLabel}</span>
+          <span class="loan-action">${actionHtml}</span>
+        `;
+        loanList.appendChild(row);
+      });
+      loanEmpty.classList.toggle("show", userLoans.length === 0);
     }
   }
 
@@ -724,16 +805,28 @@ const renderStudentDashboard = (user, userLoans, summary = {}) => {
   studentEmpty.classList.toggle("show", studentNotices.children.length === 0);
 };
 
+// Render data ringkasan admin (siswa, peminjaman, denda, pengembalian).
 const renderAdminDashboard = (session) => {
-  if (!adminStudents || !adminTotalLoans || !adminActive || !adminDue || !adminOverdue || !adminFine || !adminStudentsList || !adminStudentsEmpty || !adminLoansList || !adminLoansEmpty) {
-    return;
-  }
-
   const isAdmin = session?.role === "admin";
   if (adminSection) {
     adminSection.classList.toggle("hidden", !isAdmin);
   }
   if (!isAdmin) {
+    return;
+  }
+
+  const hasAdminWidgets =
+    adminStudents ||
+    adminTotalLoans ||
+    adminActive ||
+    adminDue ||
+    adminOverdue ||
+    adminFine ||
+    adminStudentsList ||
+    adminLoansList ||
+    adminFinesList ||
+    adminReturns;
+  if (!hasAdminWidgets) {
     return;
   }
 
@@ -743,94 +836,102 @@ const renderAdminDashboard = (session) => {
     loans.map((loan) => ({ ...loan, email }))
   );
 
-  const studentCount = users.filter((u) => (u.role || "student") === "student").length;
-  adminStudents.textContent = String(studentCount);
-  adminTotalLoans.textContent = String(all.length);
+  const students = users.filter((u) => (u.role || "student") === "student");
+  const studentCount = students.length;
+  const totalLoanCount = all.length;
 
   let activeCount = 0;
   let dueSoonCount = 0;
   let overdueCount = 0;
   let fineTotal = 0;
 
-  const enriched = all.map((loan) => {
-    const meta = buildLoanMeta(loan);
-    if (!meta) return null;
-    if (meta.returnStatus !== "approved") {
-      activeCount += 1;
-      if (meta.daysLeft >= 0 && meta.daysLeft <= 3) dueSoonCount += 1;
-      if (meta.daysLeft < 0) {
-        overdueCount += 1;
-        fineTotal += Math.abs(meta.daysLeft) * FINE_PER_DAY;
+  const enriched = all
+    .map((loan) => {
+      const meta = buildLoanMeta(loan);
+      if (!meta) return null;
+      if (meta.returnStatus !== "approved") {
+        activeCount += 1;
+        if (meta.daysLeft >= 0 && meta.daysLeft <= 3) dueSoonCount += 1;
+        if (meta.daysLeft < 0) {
+          overdueCount += 1;
+          fineTotal += Math.abs(meta.daysLeft) * FINE_PER_DAY;
+        }
       }
-    }
-    return { loan, meta };
-  }).filter(Boolean);
-
-  adminActive.textContent = String(activeCount);
-  adminDue.textContent = String(dueSoonCount);
-  adminOverdue.textContent = String(overdueCount);
-  adminFine.textContent = formatCurrency(fineTotal);
-
-  const students = users.filter((u) => (u.role || "student") === "student");
-  const studentRows = students
-    .map((student) => {
-      const studentLoans = allLoans[student.email] || [];
-      const activeLoans = studentLoans.filter((loan) => !isLoanReturned(loan)).length;
-      let statusLabel = "Belum Meminjam";
-      let badgeClass = "warn";
-      if (activeLoans > 0) {
-        statusLabel = "Aktif";
-        badgeClass = "success";
-      } else if (studentLoans.length > 0) {
-        statusLabel = "Pernah Meminjam";
-        badgeClass = "neutral";
-      }
-      return {
-        name: student.name || "Siswa",
-        nis: student.nis || student.nisn || "-",
-        kelas: student.kelas || "-",
-        totalLoans: studentLoans.length,
-        statusLabel,
-        badgeClass,
-      };
+      return { loan, meta };
     })
-    .sort((a, b) => a.name.localeCompare(b.name, "id-ID"));
+    .filter(Boolean);
 
-  adminStudentsList.innerHTML = studentRows
-    .map(
-      (student) => `
-        <div class="table-row">
-          <span>${student.name}</span>
-          <span>${student.nis}</span>
-          <span>${student.kelas}</span>
-          <span>${student.totalLoans}</span>
-          <span class="badge ${student.badgeClass}">${student.statusLabel}</span>
-        </div>
-      `
-    )
-    .join("");
-  adminStudentsEmpty.classList.toggle("show", studentRows.length === 0);
+  if (adminStudents) adminStudents.textContent = String(studentCount);
+  if (adminTotalLoans) adminTotalLoans.textContent = String(totalLoanCount);
+  if (adminActive) adminActive.textContent = String(activeCount);
+  if (adminDue) adminDue.textContent = String(dueSoonCount);
+  if (adminOverdue) adminOverdue.textContent = String(overdueCount);
+  if (adminFine) adminFine.textContent = formatCurrency(fineTotal);
 
-  const recentLoans = enriched
-    .sort((a, b) => b.meta.startDate - a.meta.startDate)
-    .slice(0, 8);
+  if (adminStudentsList && adminStudentsEmpty) {
+    const studentRows = students
+      .map((student) => {
+        const studentLoans = allLoans[student.email] || [];
+        const activeLoans = studentLoans.filter((loan) => !isLoanReturned(loan)).length;
+        let statusLabel = "Belum Meminjam";
+        let badgeClass = "warn";
+        if (activeLoans > 0) {
+          statusLabel = "Aktif";
+          badgeClass = "success";
+        } else if (studentLoans.length > 0) {
+          statusLabel = "Pernah Meminjam";
+          badgeClass = "neutral";
+        }
+        return {
+          name: student.name || "Siswa",
+          nis: student.nis || student.nisn || "-",
+          kelas: student.kelas || "-",
+          totalLoans: studentLoans.length,
+          statusLabel,
+          badgeClass,
+        };
+      })
+      .sort((a, b) => a.name.localeCompare(b.name, "id-ID"));
 
-  adminLoansList.innerHTML = recentLoans
-    .map((item) => {
-      const user = getUserByEmail(item.loan.email);
-      const name = user ? user.name : item.loan.email;
-      return `
-        <div class="table-row">
-          <span>${name}</span>
-          <span>${item.loan.judul}</span>
-          <span>${formatDate(item.meta.startDate)}</span>
-          <span>${formatDate(item.meta.dueDate)}</span>
-          <span class="badge ${item.meta.badgeClass}">${item.meta.statusLabel}</span>
-        </div>
-      `;
-    })
-    .join("");
-  adminLoansEmpty.classList.toggle("show", recentLoans.length === 0);
+    adminStudentsList.innerHTML = studentRows
+      .map(
+        (student) => `
+          <div class="table-row">
+            <span>${student.name}</span>
+            <span>${student.nis}</span>
+            <span>${student.kelas}</span>
+            <span>${student.totalLoans}</span>
+            <span class="badge ${student.badgeClass}">${student.statusLabel}</span>
+          </div>
+        `
+      )
+      .join("");
+    adminStudentsEmpty.classList.toggle("show", studentRows.length === 0);
+  }
+
+  if (adminLoansList && adminLoansEmpty) {
+    const recentLoans = enriched
+      .sort((a, b) => b.meta.startDate - a.meta.startDate)
+      .slice(0, 8);
+
+    adminLoansList.innerHTML = recentLoans
+      .map((item) => {
+        const user = getUserByEmail(item.loan.email);
+        const name = user ? user.name : item.loan.email;
+        return `
+          <div class="table-row">
+            <span>${name}</span>
+            <span>${item.loan.judul}</span>
+            <span>${formatDate(item.meta.startDate)}</span>
+            <span>${formatDate(item.meta.dueDate)}</span>
+            <span class="badge ${item.meta.badgeClass}">${item.meta.statusLabel}</span>
+          </div>
+        `;
+      })
+      .join("");
+    adminLoansEmpty.classList.toggle("show", recentLoans.length === 0);
+  }
+
   if (adminFinesList) {
     const fineRows = students
       .map((student) => {
@@ -864,24 +965,21 @@ const renderAdminDashboard = (session) => {
           badgeClass,
         };
       })
-      .sort((a, b) => {
-        const aScore = a.overdueCount + a.dueCount;
-        const bScore = b.overdueCount + b.dueCount;
-        return bScore - aScore || a.name.localeCompare(b.name, "id-ID");
-      });
+      .filter((row) => row.dueCount > 0 || row.overdueCount > 0 || row.fineValue > 0)
+      .sort((a, b) => b.fineValue - a.fineValue);
 
     adminFinesList.innerHTML = fineRows
       .map(
         (item) => `
-        <div class="table-row">
-          <span>${item.name}</span>
-          <span>${item.nis}</span>
-          <span>${item.dueCount}</span>
-          <span>${item.overdueCount}</span>
-          <span>${formatCurrency(item.fineValue)}</span>
-          <span class="badge ${item.badgeClass}">${item.statusLabel}</span>
-        </div>
-      `
+          <div class="table-row">
+            <span>${item.name}</span>
+            <span>${item.nis}</span>
+            <span>${item.dueCount} buku</span>
+            <span>${item.overdueCount} buku</span>
+            <span>${formatCurrency(item.fineValue)}</span>
+            <span class="badge ${item.badgeClass}">${item.statusLabel}</span>
+          </div>
+        `
       )
       .join("");
 
@@ -915,6 +1013,7 @@ const renderAdminDashboard = (session) => {
   }
 };
 
+// Mengubah role aktif di modal login/sign up.
 const setAuthRole = (role) => {
   roleSwitchers.forEach((switcher) => {
     const buttons = switcher.querySelectorAll(".role-btn");
@@ -957,7 +1056,9 @@ const setAuthRole = (role) => {
   if (signupForm?.elements["role"]) signupForm.elements["role"].value = role;
 };
 
+// Render semua komponen utama setelah sesi berubah.
 const renderAll = () => {
+  if (!guardPageAccess()) return;
   const session = getSession();
   const userLoans = getUserLoans(session);
   renderSession(session);
@@ -1029,7 +1130,20 @@ const setTab = (mode) => {
   });
 };
 
+// ================================
+// Event Global: Navigasi & Modal
+// ================================
 document.addEventListener("click", (event) => {
+  const profileButton = event.target.closest("[data-profile-link]");
+  if (profileButton) {
+    event.preventDefault();
+    const destination = profileButton.dataset.profileLink;
+    if (destination) {
+      window.location.href = destination;
+    }
+    return;
+  }
+
   const openAuthButton = event.target.closest("[data-open-auth]");
   if (openAuthButton) {
     event.preventDefault();
@@ -1421,22 +1535,6 @@ if (profileUploads.length) {
     });
   });
 }
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      setProfileMessage("Ukuran foto maksimal 2MB.", "error");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      updateUser(session.email, { photo: reader.result });
-      renderProfile(session);
-      setProfileMessage("Foto profil berhasil diperbarui.", "success");
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
 if (deleteAccountButton) {
   deleteAccountButton.addEventListener("click", () => {
@@ -1537,10 +1635,18 @@ logoutButtons.forEach((button) => {
   });
 });
 
-setAuthRole("student");
-renderAll();
-setupCatalogSearch();
-window.SIPERDI_APP_READY = true;
+// ================================
+// Inisialisasi Aplikasi
+// ================================
+const startApp = () => {
+  if (!guardPageAccess()) return;
+  setAuthRole("student");
+  renderAll();
+  setupCatalogSearch();
+  window.SIPERDI_APP_READY = true;
+};
+
+startApp();
 
 
 

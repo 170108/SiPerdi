@@ -57,13 +57,17 @@ body[data-theme="dark"] .tab {
   background: rgba(255, 255, 255, 0.05);
 }
 
-body[data-theme="dark"] .form input {
+body[data-theme="dark"] .form input,
+body[data-theme="dark"] .form select,
+body[data-theme="dark"] .form textarea,
+body[data-theme="dark"] .input {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.14);
   color: var(--text);
 }
 
-body[data-theme="dark"] .form input::placeholder {
+body[data-theme="dark"] .form input::placeholder,
+body[data-theme="dark"] .input::placeholder {
   color: rgba(255, 255, 255, 0.45);
 }
 
@@ -227,6 +231,12 @@ a {
 .nav-pill:hover {
   background: rgba(225, 29, 47, 0.16);
   transform: translateY(-1px);
+}
+
+.nav-pill.active {
+  background: rgba(225, 29, 47, 0.2);
+  border-color: rgba(225, 29, 47, 0.45);
+  box-shadow: 0 8px 16px rgba(225, 29, 47, 0.18);
 }
 
 .profile-chip {
@@ -515,6 +525,20 @@ a {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.page-header {
+  padding-top: 48px;
+  padding-bottom: 8px;
+}
+
+.page-header .section-title h1 {
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  margin-bottom: 10px;
+}
+
+.page-header .section-title p {
+  max-width: 720px;
 }
 
 .features {
@@ -1472,16 +1496,44 @@ body[data-theme="dark"] .theme-option {
   margin-top: 12px;
 }
 
-.form input {
+.form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.form input,
+.form select,
+.form textarea,
+.input {
+  width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid var(--border);
   font-family: inherit;
+  background: var(--white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form input[readonly] {
+.form input:focus,
+.form select:focus,
+.form textarea:focus,
+.input:focus {
+  outline: none;
+  border-color: rgba(225, 29, 47, 0.6);
+  box-shadow: 0 0 0 3px rgba(225, 29, 47, 0.12);
+}
+
+.form input[readonly],
+.input[readonly] {
   background: rgba(225, 29, 47, 0.04);
   color: var(--text-soft);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
 }
 
 .form-message {

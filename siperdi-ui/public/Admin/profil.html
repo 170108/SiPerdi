@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profil Admin | SiPerdi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-page-role="admin">
+  <div class="ambient"></div>
+
+  <!-- Header / Navbar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logos">
+        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" data-logo-view="../img/SMK.PNG" />
+        <img class="logo readify-logo" src="../img/logo%20siperdi.jpg" alt="Readify Labs" data-logo-view="../img/logo%20siperdi.jpg" />
+      </div>
+      <div>
+        <a class="brand-title link-title" href="../index.html">SiPerdi - SMK Negeri 1 Cikarang Selatan</a>
+        <p class="brand-subtitle">Profil Admin</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Menu admin">
+        <a class="nav-pill" href="dashboard.html">Dashboard Admin</a>
+        <a class="nav-pill" href="kelola-siswa.html">Kelola Siswa</a>
+        <a class="nav-pill" href="kelola-buku.html">Kelola Buku</a>
+        <a class="nav-pill" href="laporan.html">Laporan</a>
+      </nav>
+      <div class="session" data-session>
+        <span class="session-name" data-session-name>Halo, Admin</span>
+        <button class="btn ghost" data-logout>Logout</button>
+      </div>
+      <button class="btn outline" data-open-auth="login-admin" data-hide-when-auth data-login-name>Login Admin</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section profile" data-requires-auth>
+      <div class="profile-shell lockable">
+        <aside class="profile-rail">
+          <div class="rail-icon active">AD</div>
+          <div class="rail-icon">DS</div>
+          <div class="rail-icon">BK</div>
+          <div class="rail-icon">LG</div>
+        </aside>
+        <div class="profile-main">
+          <div class="profile-page-header">
+            <div class="profile-page-title">
+              <h1>Profil Admin</h1>
+              <p class="sub">Identitas admin dan ringkasan kontrol perpustakaan.</p>
+            </div>
+            <div class="profile-page-actions">
+              <a class="btn solid small" href="dashboard.html">Dashboard</a>
+              <a class="btn outline small" href="kelola-buku.html">Katalog</a>
+            </div>
+          </div>
+
+          <div class="card profile-card profile-social admin-profile-card">
+            <div class="profile-cover"></div>
+            <div class="profile-header">
+              <div class="profile-avatar">
+                <img src="../img/avatar.svg" alt="Foto Admin" data-profile-photo />
+                <span class="badge danger">Admin</span>
+              </div>
+              <div class="profile-meta">
+                <h3 data-profile="name">-</h3>
+                <p class="sub">Administrator Perpustakaan</p>
+                <div class="profile-badges">
+                  <span class="badge neutral">Akses Penuh</span>
+                  <span class="badge">SiPerdi Control</span>
+                </div>
+              </div>
+            </div>
+            <div class="profile-stats">
+              <div>
+                <span>Total Peminjaman</span>
+                <strong data-profile-stat="total">0</strong>
+              </div>
+              <div>
+                <span>Jatuh Tempo</span>
+                <strong data-profile-stat="due">0</strong>
+              </div>
+              <div>
+                <span>Total Denda</span>
+                <strong data-profile-stat="fine">Rp 0</strong>
+              </div>
+            </div>
+            <div class="form-message" data-message="profile"></div>
+          </div>
+
+          <div class="profile-meta-grid">
+            <div class="profile-meta-item">
+              <span>Email</span>
+              <strong data-profile="email">-</strong>
+            </div>
+            <div class="profile-meta-item">
+              <span>Role</span>
+              <strong data-profile="role">Admin</strong>
+            </div>
+            <div class="profile-meta-item">
+              <span>Hak Akses</span>
+              <strong>Kelola seluruh data siswa &amp; peminjaman</strong>
+            </div>
+            <div class="profile-meta-item">
+              <span>Status</span>
+              <strong>Aktif</strong>
+            </div>
+          </div>
+
+          <div class="profile-about">
+            <h4>Tentang Admin</h4>
+            <p class="sub">Admin bertanggung jawab memvalidasi peminjaman, memantau denda, dan menjaga stok buku.</p>
+          </div>
+        </div>
+      </div>
+      <div class="guard">
+        <p>Silakan login sebagai admin untuk membuka profil.</p>
+        <button class="btn solid" data-open-auth="login-admin">Login Admin</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <p class="brand-title">PT. Readify Labs</p>
+      <p class="footer-text">Innovate. Educate. Elevate.</p>
+      <p class="footer-text">Dikelola admin web untuk transformasi digital perpustakaan.</p>
+    </div>
+    <div class="footer-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="kelola-siswa.html">Kelola Siswa</a>
+      <a href="kelola-buku.html">Kelola Buku</a>
+      <a href="laporan.html">Laporan</a>
+    </div>
+  </footer>
+
+  <!-- Modal Auth -->
+  <div class="modal" id="auth-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-auth></div>
+    <div class="modal-card">
+      <button class="close" data-close-auth>&times;</button>
+      <div class="auth-tabs">
+        <button class="tab active" data-auth-tab="login">Login</button>
+        <button class="tab" data-auth-tab="signup">Sign Up</button>
+      </div>
+      <div class="auth-panel" data-auth-panel="login">
+        <h3>Masuk Akun <span data-role-label> Admin</span></h3>
+        <p class="sub" data-role-desc>Gunakan email admin perpustakaan dan kata sandi.</p>
+        <div class="role-switch" data-role-switch>
+          <button type="button" class="role-btn" data-role="student">Siswa</button>
+          <button type="button" class="role-btn active" data-role="admin">Admin</button>
+        </div>
+        <form class="form" data-form="login">
+          <input type="hidden" name="role" value="admin" />
+          <label data-login-label>Email</label>
+          <input type="email" name="email" placeholder="admin@sekolah.id" required data-login-input />
+          <label>Kata Sandi</label>
+          <input type="password" name="password" placeholder="********" required />
+          <div class="form-message" data-message="login"></div>
+          <button class="btn solid full">Login</button>
+        </form>
+        <p class="switch">
+          Belum punya akun admin?
+          <button type="button" class="link" data-auth-switch="signup">Sign Up</button>
+        </p>
+      </div>
+      <div class="auth-panel hidden" data-auth-panel="signup">
+        <h3>Sign Up Admin</h3>
+        <p class="sub">Masukkan kode admin dan buat akun baru.</p>
+        <form class="form" data-form="signup">
+          <input type="hidden" name="role" value="admin" />
+          <label>Nama Admin</label>
+          <input type="text" name="name" placeholder="Nama Admin" required />
+          <div data-role-fields="admin">
+            <label>Kode Admin</label>
+            <input type="text" name="admin_code" placeholder="Masukkan kode admin" required />
+            <p class="sub">Kode Admin: 024</p>
+          </div>
+          <label>Email</label>
+          <input type="email" name="email" placeholder="admin@sekolah.id" required />
+          <label>Kata Sandi</label>
+          <input type="password" name="password" placeholder="Minimal 8 karakter" minlength="8" required />
+          <div class="form-message" data-message="signup"></div>
+          <button class="btn solid full">Sign Up Admin</button>
+        </form>
+        <p class="switch">
+          Sudah punya akun?
+          <button type="button" class="link" data-auth-switch="login">Login</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Logo -->
+  <div class="logo-modal" id="logo-modal" aria-hidden="true">
+    <div class="logo-backdrop" data-close-logo></div>
+    <div class="logo-dialog">
+      <img src="" alt="Logo" data-logo-image />
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+</body>
+</html>
