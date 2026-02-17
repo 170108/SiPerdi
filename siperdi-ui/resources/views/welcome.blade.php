@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8" />
@@ -25,15 +25,16 @@
     <div class="topbar-actions">
       <div class="profile-shortcut" data-auth-only>
         <a class="profile-chip" href="#profile-siswa" data-admin-hidden>Profil Siswa</a>
-        <a class="profile-chip" href="#profile-admin" data-student-hidden>Profil Admin</a>
+                @if(auth()->check() && auth()->user()->role === 'admin')
+        <a class="profile-chip" href="#profile-admin">Profil Admin</a>
+        @endif
       </div>
       <nav class="topnav">
         <a href="#fitur" data-admin-hidden>Fitur</a>
         <a href="#alur" data-admin-hidden>Alur</a>
         <a href="#katalog" data-admin-hidden>Katalog</a>
         <a href="#dashboard" data-admin-hidden>Dashboard Siswa</a>
-        <a href="#admin-dashboard" data-admin-only-link class="admin-link hidden">Admin</a>
-                <button class="btn outline" data-open-auth="login-admin" data-hide-when-auth>Login Admin</button>
+        {{-- Link admin dihilangkan dari tampilan siswa --}}
         <button class="btn solid" data-open-auth="signup-student" data-hide-when-auth>Sign Up Siswa</button>
         <div class="session" data-session>
           <span class="session-name" data-session-name>Halo, Siswa</span>
@@ -176,7 +177,7 @@
             <div class="profile-meta">
               <h3 data-profile="name">-</h3>
               <p class="sub">
-                NIS <strong data-profile="nis">-</strong> � Kelas <strong data-profile="kelas">-</strong>
+                NIS <strong data-profile="nis">-</strong> · Kelas <strong data-profile="kelas">-</strong>
               </p>
               <div class="profile-badges">
                 <span class="badge neutral">Siswa Aktif</span>
@@ -226,7 +227,8 @@
       </div>
     </section>
 
-        <section id="profile-admin" class="section profile profile-admin" data-requires-auth data-student-hidden data-auth-only>
+    @if(auth()->check() && auth()->user()->role === 'admin')
+    <section id="profile-admin" class="section profile profile-admin" data-requires-auth data-auth-only>
       <div class="section-title">
         <h2>Profil Admin</h2>
         <p>Identitas dan ruang kendali admin perpustakaan.</p>
@@ -258,9 +260,9 @@
       </div>
       <div class="guard">
         <p>Silakan login untuk melihat profil admin.</p>
-        <button class="btn solid" data-open-auth="login-admin">Login Admin</button>
       </div>
     </section>
+    @endif
 
         <section id="peminjaman" class="section loan" data-requires-auth data-admin-hidden>
       <div class="section-title">
@@ -459,6 +461,7 @@
       </div>
     </section>
 
+    @if(auth()->check() && auth()->user()->role === 'admin')
     <section id="admin-dashboard" class="section admin hidden" data-admin-only>
       <div class="section-title">
         <h2>Dashboard Admin Perpustakaan</h2>
@@ -598,6 +601,7 @@
         <div class="empty-state show" data-admin-returns-empty>Belum ada permintaan pengembalian.</div>
       </div>
     </section>
+    @endif
 
     <section class="section library-insight" id="perpustakaan" data-student-hidden data-admin-hidden>
       <div class="section-title">
@@ -735,9 +739,9 @@
       <div class="auth-panel" data-auth-panel="login">
         <h3>Masuk Akun <span data-role-label> Siswa</span></h3>
         <p class="sub" data-role-desc>Gunakan NIS dan kata sandi.</p>
+        {{-- Hanya opsi siswa; admin login dipisah di area admin --}}
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
-          <button type="button" class="role-btn" data-role="admin">Admin</button>
         </div>
         <form class="form" data-form="login">
           <input type="hidden" name="role" value="student" />
@@ -760,9 +764,9 @@
       <div class="auth-panel hidden" data-auth-panel="signup">
         <h3>Daftar Akun <span data-role-label> Siswa</span></h3>
         <p class="sub" data-role-desc>Isi data sesuai identitas agar akun tervalidasi.</p>
+        {{-- Hanya opsi siswa; admin tidak bisa sign up di sini --}}
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
-          <button type="button" class="role-btn" data-role="admin">Admin</button>
         </div>
         <form class="form" data-form="signup">
           <input type="hidden" name="role" value="student" />
@@ -773,11 +777,6 @@
             <input type="text" name="nis" placeholder="0000000000" />
             <label>Kelas</label>
             <input type="text" name="kelas" placeholder="XI RPL 2" />
-          </div>
-          <div data-role-fields="admin" class="hidden">
-            <label>Kode Admin</label>
-            <input type="text" name="admin_code" placeholder="Masukkan kode admin" />
-            <p class="sub">Kode demo: 024</p>
           </div>
           <label>Email</label>
           <input type="email" name="email" placeholder="nama@sekolah.id" required />
@@ -847,6 +846,9 @@
   <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
+
+
+
 
 
 
