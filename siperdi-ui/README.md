@@ -5,7 +5,7 @@ Struktur ini menyiapkan tampilan UI SiPerdi dengan warna putih dan merah serta e
 ## Struktur
 - public/index.html: versi static untuk preview cepat
 - public/css/app.css: style utama
-- public/js/app.js: interaksi modal login, signup, profil, dan peminjaman
+- public/js/app.js: interaksi modal login, signup, profile, dan peminjaman
 - public/img/logo.svg: logo Readify Labs (vector)
 - public/img/logo-smkn1.svg: logo sekolah placeholder (silakan ganti dengan logo asli)
 - resources/views/welcome.blade.php: versi Blade untuk Laravel
@@ -19,3 +19,4 @@ Salin folder `public` dan `resources` ke proyek Laravel, lalu pastikan `routes/w
 
 ## Catatan Login/Signup & Profil
 Mode demo menggunakan localStorage agar alur login, signup, profil, dan peminjaman bisa dicoba tanpa backend. Untuk implementasi nyata, hubungkan dengan sistem autentikasi Laravel dan database.
+test update github 22 feb

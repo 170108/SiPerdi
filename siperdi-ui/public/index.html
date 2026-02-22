@@ -52,7 +52,7 @@
         </p>
         <div class="hero-actions">
           <a class="btn solid" href="Siswa/dashboard.html">Masuk Dashboard Siswa</a>
-          <a class="btn outline" href="Admin/dashboard.html">Masuk Dashboard Admin</a>
+          <!-- CTA admin dihilangkan dari tampilan siswa -->
         </div>
         <div class="hero-metrics">
           <div>
@@ -205,8 +205,8 @@
 
       <div class="catalog-block">
         <div class="catalog-header">
-          <h3>Buku Umum</h3>
-          <p class="sub">Literasi, wawasan, dan pengembangan diri.</p>
+          <h3>Katalog Buku (Live)</h3>
+          <p class="sub">Tersinkron dengan data yang dikelola admin.</p>
         </div>
         <div class="table">
           <div class="table-head">
@@ -215,35 +215,8 @@
             <span>Stok</span>
             <span>Status</span>
           </div>
-          <div class="table-row">
-            <span>Laskar Pelangi</span>
-            <span>Literasi</span>
-            <span>6</span>
-            <span class="badge success">Tersedia</span>
-          </div>
-          <div class="table-row">
-            <span>Sejarah Indonesia</span>
-            <span>Sosial</span>
-            <span>3</span>
-            <span class="badge warn">Terbatas</span>
-          </div>
-          <div class="table-row">
-            <span>Sains Populer</span>
-            <span>Sains</span>
-            <span>5</span>
-            <span class="badge success">Tersedia</span>
-          </div>
-          <div class="table-row">
-            <span>Kewirausahaan Muda</span>
-            <span>Bisnis</span>
-            <span>2</span>
-            <span class="badge warn">Terbatas</span>
-          </div>
-          <div class="table-row">
-            <span>Komunikasi Efektif</span>
-            <span>Pengembangan Diri</span>
-            <span>4</span>
-            <span class="badge success">Tersedia</span>
+          <div class="table-body" data-public-books>
+            <div class="table-row muted"><span>Memuat data buku...</span></div>
           </div>
         </div>
       </div>
@@ -309,7 +282,6 @@
         <p class="sub" data-role-desc>Gunakan NIS dan kata sandi.</p>
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
-          <button type="button" class="role-btn" data-role="admin">Admin</button>
         </div>
         <form class="form" data-form="login">
           <input type="hidden" name="role" value="student" />
@@ -334,7 +306,6 @@
         <p class="sub" data-role-desc>Isi data sesuai identitas agar akun tervalidasi.</p>
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
-          <button type="button" class="role-btn" data-role="admin">Admin</button>
         </div>
         <form class="form" data-form="signup">
           <input type="hidden" name="role" value="student" />
@@ -348,8 +319,7 @@
           </div>
           <div data-role-fields="admin" class="hidden">
             <label>Kode Admin</label>
-            <input type="text" name="admin_code" placeholder="Masukkan kode admin" />
-            <p class="sub">Kode demo: 024</p>
+          <!-- Field admin dihapus -->
           </div>
           <label>Email</label>
           <input type="email" name="email" placeholder="nama@sekolah.id" required />

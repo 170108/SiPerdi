@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="utf-8" />
@@ -8,25 +8,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/app.css" />
+  <style>
+    /* Dropdown filter kategori */
+    .filter-dropdown { position: relative; display: inline-block; }
+    .filter-menu { position: absolute; top: 110%; left: 0; background: #fff; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 6px; min-width: 200px; z-index: 20; }
+    .filter-option { width: 100%; text-align: left; background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-weight: 600; color: #3a2c2c; cursor: pointer; }
+    .filter-option:hover { background: rgba(225,29,47,0.08); }
+    .filter-option.solid { background: linear-gradient(135deg, #e11d2f, #ff6b6b); color: #fff; }
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body data-page-role="admin">
   <div class="ambient"></div>
 
-  <!-- Header / Navbar -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-logos">
-        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" data-logo-view="../img/SMK.PNG" />
-        <img class="logo readify-logo" src="../img/logo%20siperdi.jpg" alt="Readify Labs" data-logo-view="../img/logo%20siperdi.jpg" />
+        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" />
+        <img class="logo readify-logo" src="../img/logo siperdi.jpg" alt="Readify Labs" />
       </div>
       <div>
-        <a class="brand-title link-title" href="../index.html">SiPerdi - SMK Negeri 1 Cikarang Selatan</a>
+        <a class="brand-title link-title" href="dashboard.html">SiPerdi - Admin</a>
         <p class="brand-subtitle">Kelola Buku</p>
       </div>
     </div>
     <div class="topbar-actions">
       <nav class="topnav" aria-label="Menu admin">
-        <a class="nav-pill" href="dashboard.html">Dashboard Admin</a>
+        <a class="nav-pill" href="dashboard.html">Dashboard</a>
         <a class="nav-pill" href="kelola-siswa.html">Kelola Siswa</a>
         <a class="nav-pill active" href="kelola-buku.html">Kelola Buku</a>
         <a class="nav-pill" href="laporan.html">Laporan</a>
@@ -35,7 +43,6 @@
         <span class="session-name" data-session-name>Halo, Admin</span>
         <button class="btn ghost" data-logout>Logout</button>
       </div>
-      <button class="btn outline" data-open-auth="login-admin" data-hide-when-auth data-login-name>Login Admin</button>
     </div>
   </header>
 
@@ -43,7 +50,7 @@
     <section class="section page-header">
       <div class="section-title">
         <h1>Kelola Data Buku</h1>
-        <p>Kelola data buku sesuai tabel buku pada ERD SiPerdi.</p>
+        <p>Pisahkan berdasarkan buku pelajaran umum, buku jurusan, dan buku umum. Judul & stok bisa diupdate langsung.</p>
       </div>
     </section>
 
@@ -55,50 +62,67 @@
           <p class="sub" data-catalog-count>Menampilkan semua buku.</p>
           <div class="empty-state" data-catalog-empty>Tidak ada buku yang sesuai.</div>
         </div>
+
+        <div class="catalog-filters">
+          <label class="sub">Filter Kategori:</label>
+          <div class="filter-dropdown" data-filter-dropdown>
+            <button class="btn tiny solid" data-filter-trigger>Semua</button>
+            <div class="filter-menu hidden" data-filter-menu>
+              <button class="filter-option solid" data-filter-kategori="all">Semua</button>
+              <button class="filter-option" data-filter-kategori="pelajaran">Buku Pelajaran Umum / Kelas</button>
+              <button class="filter-option" data-filter-kategori="jurusan">Buku Jurusan</button>
+              <button class="filter-option" data-filter-kategori="umum">Buku Umum</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3 style="margin-bottom:8px;">Tambah Buku</h3>
+          <form class="form grid" data-add-form style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+            <div>
+              <label>Kode Buku</label>
+              <input type="text" name="kode" placeholder="001/B/CIKSEL/2026" required />
+            </div>
+            <div>
+              <label>Kelas</label>
+              <input type="text" name="kelas" placeholder="10 / 11 / 12 / Umum" required />
+            </div>
+            <div>
+              <label>Judul</label>
+              <input type="text" name="judul" placeholder="Judul Buku" required />
+            </div>
+            <div>
+              <label>Penerbit</label>
+              <input type="text" name="penerbit" placeholder="Penerbit" required />
+            </div>
+            <div>
+              <label>Datang Buku</label>
+              <input type="text" name="tahun" placeholder="2026" required />
+            </div>
+            <div>
+              <label>Stok</label>
+              <input type="number" name="stok" min="0" value="1" required />
+            </div>
+            <div>
+              <label>Kategori</label>
+              <select name="kategori" required>
+                <option value="pelajaran">Buku Pelajaran Umum / Kelas</option>
+                <option value="jurusan">Buku Jurusan</option>
+                <option value="umum">Buku Umum</option>
+              </select>
+            </div>
+            <div style="align-self:end;">
+              <button class="btn solid" type="submit">Tambah</button>
+            </div>
+          </form>
+        </div>
+
         <div class="table admin-catalog-table">
           <div class="table-head">
-            <span>ID</span>
-            <span>Judul</span>
-            <span>Penulis</span>
-            <span>Tahun</span>
-            <span>Status</span>
+            <span>Kode Buku</span><span>Kelas</span><span>Judul</span><span>Penerbit</span><span>Datang Buku</span><span>Stok</span><span>Status</span>
           </div>
-          <div class="table-body">
-            <div class="table-row">
-              <span>BK-001</span>
-              <span>Algoritma dan Pemrograman</span>
-              <span>H. Wibowo</span>
-              <span>2021</span>
-              <span class="badge success">Tersedia</span>
-            </div>
-            <div class="table-row">
-              <span>BK-002</span>
-              <span>Basis Data untuk RPL</span>
-              <span>D. Prasetyo</span>
-              <span>2020</span>
-              <span class="badge warn">Dipinjam</span>
-            </div>
-            <div class="table-row">
-              <span>BK-003</span>
-              <span>Jaringan Komputer</span>
-              <span>A. Putra</span>
-              <span>2019</span>
-              <span class="badge success">Tersedia</span>
-            </div>
-            <div class="table-row">
-              <span>BK-004</span>
-              <span>UI/UX untuk Pemula</span>
-              <span>S. Rahman</span>
-              <span>2022</span>
-              <span class="badge success">Tersedia</span>
-            </div>
-            <div class="table-row">
-              <span>BK-005</span>
-              <span>Administrasi Server</span>
-              <span>M. Santoso</span>
-              <span>2023</span>
-              <span class="badge warn">Dipinjam</span>
-            </div>
+          <div class="table-body" id="book-table-body">
+            <div class="table-row muted"><span>Memuat data buku...</span></div>
           </div>
         </div>
       </div>
@@ -123,71 +147,211 @@
     </div>
   </footer>
 
-  <!-- Modal Auth -->
   <div class="modal" id="auth-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-auth></div>
     <div class="modal-card">
       <button class="close" data-close-auth>&times;</button>
       <div class="auth-tabs">
-        <button class="tab active" data-auth-tab="login">Login</button>
-        <button class="tab" data-auth-tab="signup">Sign Up</button>
+        <button class="tab active" data-auth-tab="login">Login Admin</button>
+        <button class="tab" data-auth-tab="signup">Sign Up Admin</button>
       </div>
       <div class="auth-panel" data-auth-panel="login">
-        <h3>Masuk Akun <span data-role-label> Admin</span></h3>
-        <p class="sub" data-role-desc>Gunakan email admin perpustakaan dan kata sandi.</p>
-        <div class="role-switch" data-role-switch>
-          <button type="button" class="role-btn" data-role="student">Siswa</button>
-          <button type="button" class="role-btn active" data-role="admin">Admin</button>
-        </div>
+        <h3>Login Admin</h3>
+        <p class="sub">Masuk menggunakan email admin perpustakaan.</p>
         <form class="form" data-form="login">
-          <input type="hidden" name="role" value="admin" />
-          <label data-login-label>Email</label>
-          <input type="email" name="email" placeholder="admin@sekolah.id" required data-login-input />
+          <label>Email</label>
+          <input type="email" name="email" placeholder="admin@sekolah.id" required />
           <label>Kata Sandi</label>
           <input type="password" name="password" placeholder="********" required />
           <div class="form-message" data-message="login"></div>
           <button class="btn solid full">Login</button>
         </form>
-        <p class="switch">
-          Belum punya akun admin?
-          <button type="button" class="link" data-auth-switch="signup">Sign Up</button>
-        </p>
       </div>
       <div class="auth-panel hidden" data-auth-panel="signup">
         <h3>Sign Up Admin</h3>
-        <p class="sub">Masukkan kode admin dan buat akun baru.</p>
+        <p class="sub">Buat akun admin baru.</p>
         <form class="form" data-form="signup">
-          <input type="hidden" name="role" value="admin" />
           <label>Nama Admin</label>
-          <input type="text" name="name" placeholder="Nama Admin" required />
-          <div data-role-fields="admin">
-            <label>Kode Admin</label>
-            <input type="text" name="admin_code" placeholder="Masukkan kode admin" required />
-            <p class="sub">Kode Admin: 024</p>
-          </div>
+          <input type="text" name="name" placeholder="Nama lengkap" required />
           <label>Email</label>
           <input type="email" name="email" placeholder="admin@sekolah.id" required />
           <label>Kata Sandi</label>
           <input type="password" name="password" placeholder="Minimal 8 karakter" minlength="8" required />
           <div class="form-message" data-message="signup"></div>
-          <button class="btn solid full">Sign Up Admin</button>
+          <button class="btn solid full">Sign Up</button>
         </form>
-        <p class="switch">
-          Sudah punya akun?
-          <button type="button" class="link" data-auth-switch="login">Login</button>
-        </p>
       </div>
     </div>
   </div>
 
-  <!-- Modal Logo -->
-  <div class="logo-modal" id="logo-modal" aria-hidden="true">
-    <div class="logo-backdrop" data-close-logo></div>
-    <div class="logo-dialog">
-      <img src="" alt="Logo" data-logo-image />
-    </div>
-  </div>
-
   <script src="../js/app.js"></script>
+  <script>
+    // Load & persist data buku via localStorage, tampilkan filter, tambah, update, hapus
+    document.addEventListener('DOMContentLoaded', () => {
+      const body = document.getElementById('book-table-body');
+      const filterButtons = document.querySelectorAll('[data-filter-kategori]');
+      const filterMenu = document.querySelector('[data-filter-menu]');
+      const filterTrigger = document.querySelector('[data-filter-trigger]');
+      const searchInput = document.querySelector('[data-catalog-search]');
+      const countText = document.querySelector('[data-catalog-count]');
+      const emptyState = document.querySelector('[data-catalog-empty]');
+      const addForm = document.querySelector('[data-add-form]');
+
+      let books = [];
+      let currentKategori = 'all';
+      let currentKeyword = '';
+
+      const renderRows = () => {
+        body.innerHTML = '';
+        const keyword = currentKeyword.toLowerCase();
+        const sorted = [...books].sort((a, b) => String(a.kode || '').localeCompare(String(b.kode || '')));
+        const filtered = sorted.filter((b) => {
+          const matchCat = currentKategori === 'all' || b.kategori === currentKategori;
+          const matchKey =
+            !keyword ||
+            b.judul.toLowerCase().includes(keyword) ||
+            b.kode.toLowerCase().includes(keyword) ||
+            b.penerbit.toLowerCase().includes(keyword);
+          return matchCat && matchKey;
+        });
+
+        filtered.forEach((book) => {
+          const row = document.createElement('div');
+          row.className = 'table-row';
+          row.dataset.bookRow = '';
+          row.dataset.kategori = book.kategori;
+          row.dataset.id = book.id;
+          row.dataset.stock = book.stok;
+
+          const badge = stockBadge(book.stok);
+          row.innerHTML = `
+            <span>${book.kode}</span>
+            <span>${book.kelas}</span>
+            <span data-title>${book.judul}</span>
+            <span>${book.penerbit}</span>
+            <span>${book.tahun}</span>
+            <span data-stock>${book.stok}</span>
+            <span class="${badge.cls}" data-status>${badge.text}</span>
+            <span class="flex gap-6">
+              <button class="btn tiny" data-update>Update</button>
+              <button class="btn tiny ghost" data-delete>Hapus</button>
+            </span>
+          `;
+
+          const titleEl = row.querySelector('[data-title]');
+          const stockEl = row.querySelector('[data-stock]');
+          const statusEl = row.querySelector('[data-status]');
+          const btnUpdate = row.querySelector('[data-update]');
+          const btnDelete = row.querySelector('[data-delete]');
+
+          btnUpdate.addEventListener('click', () => {
+            const newTitle = prompt('Ubah judul buku:', titleEl.textContent.trim());
+            if (newTitle === null) return;
+            let newStock = prompt('Ubah stok buku:', stockEl.textContent.trim());
+            if (newStock === null) return;
+            newStock = parseInt(newStock, 10);
+            if (Number.isNaN(newStock) || newStock < 0) {
+              alert('Stok harus angka >= 0');
+              return;
+            }
+            book.judul = newTitle || '-';
+            book.stok = newStock;
+
+            titleEl.textContent = book.judul;
+            stockEl.textContent = book.stok;
+            row.dataset.stock = book.stok;
+            const badgeNow = stockBadge(book.stok);
+            statusEl.textContent = badgeNow.text;
+            statusEl.className = badgeNow.cls;
+            saveBookInventory(books);
+          });
+
+          btnDelete.addEventListener('click', () => {
+            if (!confirm(`Hapus buku "${book.judul}"?`)) return;
+            books = books.filter((b) => b.id !== book.id);
+            saveBookInventory(books);
+            renderRows();
+          });
+
+          body.appendChild(row);
+        });
+
+        countText.textContent = filtered.length
+          ? `Menampilkan ${filtered.length} buku`
+          : 'Tidak ada buku yang sesuai.';
+
+        emptyState.style.display = filtered.length ? 'none' : 'block';
+      };
+
+      // Filter kategori (dropdown)
+      filterTrigger?.addEventListener('click', () => {
+        filterMenu?.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('[data-filter-dropdown]')) {
+          filterMenu?.classList.add('hidden');
+        }
+      });
+
+      filterButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentKategori = btn.dataset.filterKategori;
+          filterButtons.forEach((b) => b.classList.remove('solid'));
+          btn.classList.add('solid');
+          if (filterTrigger) filterTrigger.textContent = btn.textContent.trim();
+          filterMenu?.classList.add('hidden');
+          renderRows();
+        });
+      });
+
+      // Pencarian
+      searchInput?.addEventListener('input', (e) => {
+        currentKeyword = e.target.value || '';
+        renderRows();
+      });
+
+      // Tambah buku
+      addForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(addForm);
+        const newBook = {
+          id: (formData.get('kode') || `BK-${Date.now()}`).toString(),
+          kode: formData.get('kode')?.toString().trim() || '-',
+          kelas: formData.get('kelas')?.toString().trim() || '-',
+          judul: formData.get('judul')?.toString().trim() || '-',
+          penerbit: formData.get('penerbit')?.toString().trim() || '-',
+          tahun: formData.get('tahun')?.toString().trim() || '-',
+          stok: parseInt(formData.get('stok')?.toString() || '0', 10) || 0,
+          kategori: formData.get('kategori') || 'umum'
+        };
+        books.push(newBook);
+        saveBookInventory(books);
+        addForm.reset();
+        renderRows();
+        filterMenu?.classList.add('hidden');
+      });
+
+      // Inisialisasi data
+      loadBookInventory().then((data) => {
+        books = data;
+        renderRows();
+      });
+
+      // Sync bila tab lain mengubah data
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'siperdi_books') {
+          books = readBookStore().map((b) => ({
+            ...b,
+            kategori: normalizeCategory ? normalizeCategory(b.kategori) : (b.kategori || 'umum'),
+          }));
+          if (typeof saveBookInventory === 'function') {
+            saveBookInventory(books);
+          }
+          renderRows();
+        }
+      });
+    });
+  </script>
 </body>
 </html>

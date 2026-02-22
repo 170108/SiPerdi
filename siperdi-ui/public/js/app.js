@@ -86,12 +86,97 @@ const catalogEmpty = document.querySelector("[data-catalog-empty]");
 // Konstanta & Konfigurasi
 // ================================
 const STORAGE_KEY = "siperdi_users";
-const SESSION_KEY = "siperdi_session";
+const SESSION_KEY = "siperdi_session"; // legacy single-session
+const SESSIONS_KEY = "siperdi_sessions"; // multi-session per role
 const LOAN_KEY = "siperdi_loans";
+const BOOKS_KEY = "siperdi_books";
 const FINE_PER_DAY = 1000;
 const ADMIN_CODE = "024";
 const THEME_KEY = "siperdi_theme";
 const THEME_OPTIONS = ["default", "light", "dark"];
+
+// ====================================
+// Data Buku (disinkron antar halaman)
+// ====================================
+const CATEGORY_LABELS = {
+  pelajaran: "Buku Pelajaran Umum / Kelas",
+  jurusan: "Buku Jurusan",
+  umum: "Buku Umum",
+};
+
+const normalizeCategory = (cat) => {
+  const val = (cat || "").toLowerCase();
+  if (val.startsWith("pelajaran")) return "pelajaran";
+  if (val.startsWith("jurusan")) return "jurusan";
+  if (CATEGORY_LABELS[val]) return val;
+  return "umum";
+};
+
+const categoryLabel = (cat) => CATEGORY_LABELS[normalizeCategory(cat)] || "Kategori Lain";
+
+function getDefaultBooks() {
+  return [
+    { id: "BK-001", kode: "001/B/CIKSEL/2026", kelas: "10", judul: "Sejarah Indonesia X", penerbit: "Erlangga", tahun: "2022", stok: 12, kategori: "pelajaran" },
+    { id: "BK-002", kode: "002/B/CIKSEL/2026", kelas: "10", judul: "Matematika X", penerbit: "Yudhistira", tahun: "2023", stok: 6, kategori: "pelajaran" },
+    { id: "BK-101", kode: "101/B/CIKSEL/2026", kelas: "11", judul: "Bahasa Inggris XI", penerbit: "Mediatama", tahun: "2024", stok: 3, kategori: "pelajaran" },
+    { id: "BK-102", kode: "102/B/CIKSEL/2026", kelas: "11", judul: "PPKn XI", penerbit: "Mediatama", tahun: "2024", stok: 0, kategori: "pelajaran" },
+    { id: "BK-201", kode: "201/B/CIKSEL/2026", kelas: "12", judul: "Fisika XII", penerbit: "Erlangga", tahun: "2025", stok: 8, kategori: "jurusan" },
+    { id: "BK-202", kode: "202/B/CIKSEL/2026", kelas: "12", judul: "Kimia XII", penerbit: "Erlangga", tahun: "2025", stok: 2, kategori: "jurusan" },
+    { id: "UM-001", kode: "UM-001", kelas: "Umum", judul: "Literasi Digital", penerbit: "Gramedia", tahun: "2024", stok: 5, kategori: "umum" },
+    { id: "UM-002", kode: "UM-002", kelas: "Umum", judul: "Psikologi Remaja", penerbit: "Kompas", tahun: "2023", stok: 1, kategori: "umum" },
+  ];
+}
+
+function readBookStore() {
+  try {
+    return JSON.parse(localStorage.getItem(BOOKS_KEY)) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveBookInventory(books) {
+  localStorage.setItem(BOOKS_KEY, JSON.stringify(books || []));
+}
+
+async function loadBookInventory() {
+  const stored = readBookStore();
+  const migrate = (list) => {
+    let changed = false;
+    const normalized = list.map((b) => {
+      const cat = normalizeCategory(b.kategori);
+      if (cat !== b.kategori) changed = true;
+      return { ...b, kategori: cat };
+    });
+    if (changed) saveBookInventory(normalized);
+    return normalized;
+  };
+  if (stored.length) return migrate(stored);
+  // coba fetch dari file json sesuai lokasi halaman
+  try {
+    const res = await fetch(resolvePath("data/buku.json"), { cache: "no-cache" });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) {
+        const normalized = migrate(data);
+        saveBookInventory(normalized);
+        return normalized;
+      }
+    }
+  } catch (e) {
+    // abaikan, fallback ke default
+  }
+  const defaults = getDefaultBooks();
+  const normalized = migrate(defaults);
+  saveBookInventory(normalized);
+  return normalized;
+}
+
+function stockBadge(stok) {
+  if (stok <= 0) return { text: "Habis", cls: "badge danger" };
+  if (stok <= 3) return { text: "Terbatas", cls: "badge warn" };
+  return { text: "Tersedia", cls: "badge success" };
+}
 
 // Simpan label default tombol login agar bisa dikembalikan saat logout.
 loginNameButtons.forEach((btn) => {
@@ -121,17 +206,8 @@ const getRoleHome = (role) => {
 };
 
 const guardPageAccess = () => {
-  const pageRole = document.body?.dataset.pageRole;
-  if (!pageRole || pageRole === "public") return true;
-  const session = getSession();
-  if (!session) {
-    window.location.href = resolvePath("index.html");
-    return false;
-  }
-  if (session.role !== pageRole) {
-    window.location.href = getRoleHome(session.role);
-    return false;
-  }
+  // Dengan multi-session, kita tidak logout paksa saat role berbeda.
+  // Halaman akan memperlakukan sesi yang tidak sesuai sebagai "belum login".
   return true;
 };
 
@@ -172,19 +248,50 @@ const saveUsers = (users) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
 };
 
+const getSessionsStore = () => {
+  try {
+    return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || {};
+  } catch (error) {
+    return {};
+  }
+};
+
+const saveSessionsStore = (store) => {
+  localStorage.setItem(SESSIONS_KEY, JSON.stringify(store || {}));
+};
+
+// Ambil sesi aktif untuk role halaman (admin/siswa) jika ada.
 const getSession = () => {
   try {
+    const pageRole = document.body?.dataset.pageRole;
+    const store = getSessionsStore();
+    if (pageRole && store[pageRole]) return store[pageRole];
+    // fallback legacy
     return JSON.parse(localStorage.getItem(SESSION_KEY));
   } catch (error) {
     return null;
   }
 };
 
+// Simpan sesi, mendukung multi-role agar admin & siswa bisa aktif bersamaan di tab berbeda.
 const setSession = (user) => {
+  // legacy single-session (dipakai fitur lama)
   localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  // multi-role
+  const store = getSessionsStore();
+  store[user.role || "student"] = user;
+  saveSessionsStore(store);
 };
 
-const clearSession = () => {
+// Hapus sesi untuk role halaman; tidak mengganggu role lain.
+const clearSession = (role) => {
+  const targetRole = role || document.body?.dataset.pageRole;
+  const store = getSessionsStore();
+  if (targetRole && store[targetRole]) {
+    delete store[targetRole];
+    saveSessionsStore(store);
+  }
+  // legacy clean-up
   localStorage.removeItem(SESSION_KEY);
 };
 
@@ -498,6 +605,39 @@ const renderProfile = (user) => {
   });
 
   setProfileMessage("");
+};
+
+// Render katalog publik (index) agar mengikuti data buku terbaru
+const renderPublicCatalog = () => {
+  const container = document.querySelector("[data-public-books]");
+  if (!container) return;
+  const countText = document.querySelector("[data-catalog-count]");
+  const emptyState = document.querySelector("[data-catalog-empty]");
+
+  loadBookInventory()
+    .then((books) => {
+      container.innerHTML = "";
+      const sorted = [...books].sort((a, b) => String(a.kode || "").localeCompare(String(b.kode || "")));
+      sorted.forEach((book) => {
+        const badge = stockBadge(book.stok);
+        const row = document.createElement("div");
+        row.className = "table-row";
+        row.innerHTML = `
+          <span>${book.judul}</span>
+          <span>${categoryLabel(book.kategori)}</span>
+          <span>${book.stok}</span>
+          <span class="${badge.cls}">${badge.text}</span>
+        `;
+        container.appendChild(row);
+      });
+      if (countText) countText.textContent = `Menampilkan ${books.length} buku.`;
+      if (emptyState) emptyState.classList.toggle("show", books.length === 0);
+    })
+    .catch(() => {
+      container.innerHTML = '<div class="table-row muted"><span>Gagal memuat data buku.</span></div>';
+      if (countText) countText.textContent = "Gagal memuat data.";
+      if (emptyState) emptyState.classList.add("show");
+    });
 };
 
 const setupCatalogSearch = () => {
@@ -1059,7 +1199,7 @@ const setAuthRole = (role) => {
 // Render semua komponen utama setelah sesi berubah.
 const renderAll = () => {
   if (!guardPageAccess()) return;
-  const session = getSession();
+  const session = getSession(); // hanya sesi sesuai role halaman
   const userLoans = getUserLoans(session);
   renderSession(session);
   renderGuards(session);
@@ -1630,7 +1770,7 @@ if (loanForm) {
 
 logoutButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    clearSession();
+    clearSession(document.body?.dataset.pageRole);
     renderAll();
   });
 });
@@ -1643,12 +1783,15 @@ const startApp = () => {
   setAuthRole("student");
   renderAll();
   setupCatalogSearch();
+  renderPublicCatalog();
   window.SIPERDI_APP_READY = true;
 };
 
 startApp();
 
-
-
-
-
+// Sinkron katalog publik saat tab lain mengubah data buku
+window.addEventListener("storage", (event) => {
+  if (event.key === BOOKS_KEY) {
+    renderPublicCatalog();
+  }
+});
