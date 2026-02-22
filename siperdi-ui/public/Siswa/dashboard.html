@@ -120,7 +120,7 @@
       </div>
       <div class="auth-panel" data-auth-panel="login">
         <h3>Masuk Akun <span data-role-label> Siswa</span></h3>
-        <p class="sub" data-role-desc>Gunakan NIS dan kata sandi.</p>
+        <p class="sub" data-role-desc>Gunakan NIS dan buatkata sandi.</p>
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
           <button type="button" class="role-btn" data-role="admin">Admin</button>
@@ -139,8 +139,6 @@
           <button type="button" class="link" data-auth-switch="signup">Sign Up</button>
         </p>
         <p class="switch">
-          Belum verifikasi?
-          <button type="button" class="link" data-auth-switch="verify">Verifikasi Email</button>
         </p>
       </div>
       <div class="auth-panel hidden" data-auth-panel="signup">
@@ -163,7 +161,7 @@
           <div data-role-fields="admin" class="hidden">
             <label>Kode Admin</label>
             <input type="text" name="admin_code" placeholder="Masukkan kode admin" />
-            <p class="sub">Kode demo: 024</p>
+            <p class="sub">Kode: 024</p>
           </div>
           <label>Email</label>
           <input type="email" name="email" placeholder="nama@sekolah.id" required />
@@ -178,15 +176,11 @@
         </p>
       </div>
       <div class="auth-panel hidden" data-auth-panel="verify">
-        <h3>Verifikasi Email</h3>
-        <p class="sub">Masukkan kode verifikasi yang dikirim ke email.</p>
         <form class="form" data-form="verify">
           <label>Email</label>
           <input type="email" name="email" placeholder="nama@sekolah.id" required />
-          <label>Kode Verifikasi</label>
           <input type="text" name="code" placeholder="6 digit kode" required />
           <div class="form-message" data-message="verify"></div>
-          <button class="btn solid full">Verifikasi</button>
         </form>
         <p class="switch">
           Kembali ke login?
