@@ -8,6 +8,81 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/app.css" />
+  <style>
+    /* Nav lengket saat scroll & geser ke kanan */
+    .topbar.scrolled {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .topbar.scrolled .topbar-actions {
+      margin-left: auto;
+    }
+    .topbar.scrolled .topnav {
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Penataan kartu profil agar lebih rapih */
+    .profile-card {
+      margin-top: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 0;
+    }
+    .profile-card .profile-cover {
+      height: 140px;
+      background: linear-gradient(135deg, #e11d2f, #ff6b6b);
+      position: relative;
+    }
+    .profile-card .profile-header {
+      padding: 20px 24px 12px;
+      align-items: flex-end;
+      gap: 16px;
+    }
+    .profile-card .profile-avatar {
+      position: relative;
+      margin-top: -60px;
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      background: #fff;
+    }
+    .profile-card .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-card .profile-meta {
+      padding-bottom: 8px;
+    }
+    .profile-card .profile-stats {
+      padding: 0 24px 20px;
+    }
+
+    /* Hilangkan kolom kosong bekas rail */
+    .profile-shell {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    /* Tombol upload agar mudah diklik */
+    .profile-photo label.btn {
+      margin-top: 8px;
+    }
+    input[data-profile-upload] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+  </style>
 </head>
 <body data-page-role="student">
   <div class="ambient"></div>
@@ -34,7 +109,7 @@
         <span class="session-name" data-session-name>Halo, Siswa</span>
         <button class="btn ghost" data-logout>Logout</button>
       </div>
-      <button class="btn outline" data-open-auth="login" data-hide-when-auth data-login-name>Login</button>
+      <a class="btn outline" href="dashboard.html">Dashboard</a>
       <button class="btn solid" data-open-auth="signup-student" data-hide-when-auth>Daftar Siswa</button>
     </div>
   </header>
@@ -43,12 +118,6 @@
     <!-- Profil Siswa -->
     <section class="section profile" data-requires-auth>
       <div class="profile-shell lockable">
-        <aside class="profile-rail">
-          <div class="rail-icon active">PR</div>
-          <div class="rail-icon">ST</div>
-          <div class="rail-icon">TM</div>
-          <div class="rail-icon">AK</div>
-        </aside>
         <div class="profile-main">
           <div class="profile-page-header">
             <div class="profile-page-title">
@@ -56,18 +125,17 @@
               <p class="sub">Identitas siswa, statistik peminjaman, dan preferensi akun.</p>
             </div>
             <div class="profile-page-actions">
-              <a class="btn solid small" href="dashboard.html">Dashboard</a>
               <a class="btn outline small" href="pinjam.html">Pinjam Buku</a>
             </div>
           </div>
 
           <div class="card profile-card profile-social">
             <div class="profile-cover"></div>
-            <div class="profile-header">
-              <div class="profile-avatar">
-                <img src="../img/avatar.svg" alt="Foto Siswa" data-profile-photo />
-                <span class="badge success">Siswa</span>
-              </div>
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <img src="../img/avatar.svg" alt="Foto Siswa" data-profile-photo />
+              <span class="badge success">Siswa</span>
+            </div>
               <div class="profile-meta">
                 <h3 data-profile="name">-</h3>
                 <p class="sub">Anggota Perpustakaan Digital</p>
@@ -96,11 +164,11 @@
 
           <div class="card">
             <div class="profile-grid">
-              <div class="profile-photo">
-                <img src="../img/avatar.svg" alt="Foto Profil" data-profile-photo />
-                <label class="btn outline small" for="profile-photo-upload">Ubah Foto</label>
-                <input id="profile-photo-upload" type="file" accept="image/*" data-profile-upload />
-              </div>
+            <div class="profile-photo">
+              <img src="../img/avatar.svg" alt="Foto Profil" data-profile-photo />
+              <label class="btn outline small" for="profile-photo-upload">Ubah Foto</label>
+              <input id="profile-photo-upload" type="file" accept="image/*" data-profile-upload />
+            </div>
               <div class="profile-info">
                 <div>
                   <span>Nama</span>
@@ -262,5 +330,33 @@
   </div>
 
   <script src="../js/app.js"></script>
+  <script>
+    // tambahkan class scrolled saat halaman digulir agar nav pindah ke kanan atas
+    const topbar = document.querySelector('.topbar');
+    const onScroll = () => {
+      if (!topbar) return;
+      topbar.classList.toggle('scrolled', window.scrollY > 10);
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Pastikan ganti foto profil langsung update semua avatar di halaman
+    (() => {
+      const upload = document.querySelector('[data-profile-upload]');
+      const photos = document.querySelectorAll('[data-profile-photo]');
+      if (!upload || !photos.length) return;
+      upload.addEventListener('change', (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          photos.forEach((img) => {
+            img.src = reader.result;
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    })();
+  </script>
 </body>
 </html>

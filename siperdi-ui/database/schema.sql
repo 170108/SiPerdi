@@ -1,4 +1,4 @@
-﻿  -- SiPerdi Database Schema (MySQL 8.x)
+﻿n  -- SiPerdi Database Schema (MySQL 8.x)
 -- Created for: SMK Negeri 1 Cikarang Selatan
 
 CREATE DATABASE IF NOT EXISTS siperdi
@@ -12,7 +12,7 @@ CREATE TABLE users (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   role ENUM('student','admin') NOT NULL DEFAULT 'student',
   name VARCHAR(120) NOT NULL,
-  nis VARCHAR(20) UNIQUE,
+  NIS VARCHAR(20) UNIQUE,
   class_name VARCHAR(50),
   email VARCHAR(190) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,

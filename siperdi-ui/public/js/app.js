@@ -583,7 +583,10 @@ const renderProfile = (user) => {
     field.textContent = currentUser[key] || "-";
   });
   profilePhotos.forEach((photo) => {
-    photo.src = currentUser?.photo || "img/avatar.svg";
+    const defaultSrc = currentUser?.role === "admin"
+      ? resolvePath("img/admin.png")
+      : resolvePath("img/avatar.svg");
+    photo.src = currentUser?.photo || defaultSrc;
   });
 
   const stats = buildProfileStats(currentUser);
