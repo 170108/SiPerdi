@@ -916,6 +916,40 @@ a {
   margin-top: 4px;
 }
 
+.profile-card { transition: background 0.3s ease, border-color 0.3s ease; }
+body[data-theme="dark"] .profile-card {
+  background: #0d0f17;
+  border-color: #1c1f2a;
+}
+body[data-theme="dark"] .profile-cover {
+  background: linear-gradient(135deg, #d62c4c, #f87070);
+}
+body[data-theme="dark"] .profile-header,
+body[data-theme="dark"] .profile-stats {
+  background: #0c0f17;
+}
+body[data-theme="dark"] .profile-card::before {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+body[data-theme="dark"] .profile-header,
+body[data-theme="dark"] .profile-stats {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+body[data-theme="dark"] .profile-meta h3,
+body[data-theme="dark"] .profile-meta p,
+body[data-theme="dark"] .profile-stats span,
+body[data-theme="dark"] .profile-stats strong {
+  color: #f6f6f9;
+}
+body[data-theme="dark"] .profile-meta-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: #1d2030;
+}
+body[data-theme="dark"] .profile-about {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #1d2030;
+  color: #e8e8f2;
+}
 .profile-meta h3 {
   font-size: 1.35rem;
   margin-bottom: 6px;
@@ -973,6 +1007,26 @@ a {
 
 .profile-preferences .sub {
   margin-top: 4px;
+}
+
+/* Warna putih hanya saat tema gelap */
+body[data-theme="dark"] .profile-preferences {
+  color: #fff;
+}
+body[data-theme="dark"] .profile-preferences .sub {
+  color: #fff;
+}
+body[data-theme="dark"] .profile-preferences .theme-toggle .theme-option {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+body[data-theme="dark"] .profile-preferences .theme-toggle .theme-option:hover {
+  border-color: #fff;
+}
+body[data-theme="dark"] .profile-preferences .theme-toggle .theme-option.active,
+body[data-theme="dark"] .profile-preferences .theme-toggle .theme-option:focus-visible {
+  background: #fff;
+  color: #0f172a;
 }
 
 .theme-toggle {

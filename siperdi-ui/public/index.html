@@ -26,10 +26,12 @@
     </div>
     <div class="topbar-actions">
       <nav class="topnav" aria-label="Menu utama">
+        <a class="nav-pill" href="index.html">Home</a>
         <a class="nav-pill" href="#fitur">Fitur</a>
         <a class="nav-pill" href="#alur">Alur</a>
         <a class="nav-pill" href="#katalog">Katalog</a>
         <a class="nav-pill" href="#kontak">Kontak</a>
+        <a class="nav-pill solid" href="Siswa/dashboard.html">Masuk Dashboard Siswa</a>
       </nav>
       <div class="session" data-session>
         <span class="session-name" data-session-name>Halo, Siswa</span>
@@ -253,8 +255,27 @@
 
       <div class="catalog-block">
         <div class="catalog-header">
-          <h3>Katalog Buku</h3>
-          <p class="sub">Sinkron dengan data yang dikelola admin.</p>
+          <h3>Katalog Buku Pelajaran Umum</h3>
+          <p class="sub">Sinkron dengan data yang dikelola admin (kategori pelajaran).</p>
+        </div>
+        <div class="table">
+          <div class="table-head">
+            <span>Kode Buku</span>
+            <span>Judul</span>
+            <span>Kelas</span>
+            <span>Stok</span>
+            <span>Status</span>
+          </div>
+          <div class="table-body" data-public-pelajaran>
+            <div class="table-row muted"><span>Memuat data buku pelajaran...</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="catalog-block">
+        <div class="catalog-header">
+          <h3>Katalog Buku Umum</h3>
+          <p class="sub">Sinkron dengan data yang dikelola admin (kategori umum).</p>
         </div>
         <div class="table">
           <div class="table-head">
@@ -263,8 +284,8 @@
             <span>Stok</span>
             <span>Status</span>
           </div>
-          <div class="table-body" data-public-books>
-            <div class="table-row muted"><span>Memuat data buku...</span></div>
+          <div class="table-body" data-public-umum>
+            <div class="table-row muted"><span>Memuat data buku umum...</span></div>
           </div>
         </div>
       </div>

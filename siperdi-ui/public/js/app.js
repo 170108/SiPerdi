@@ -509,7 +509,8 @@ const renderSession = (user) => {
   loginNameButtons.forEach((btn) => {
     const defaultLabel = btn.dataset.loginDefault || btn.textContent.trim();
     if (loggedIn) {
-      btn.textContent = user?.name || defaultLabel;
+      const profileLabel = user?.role === "admin" ? "Profil Admin" : "Profil Siswa";
+      btn.textContent = profileLabel;
       const profileLink = getProfileLink(user);
       if (profileLink) {
         btn.dataset.profileLink = profileLink;
@@ -612,32 +613,72 @@ const renderProfile = (user) => {
 
 // Render katalog publik (index) agar mengikuti data buku terbaru
 const renderPublicCatalog = () => {
-  const container = document.querySelector("[data-public-books]");
-  if (!container) return;
+  const pelContainer = document.querySelector("[data-public-pelajaran]");
+  const umumContainer = document.querySelector("[data-public-umum]");
+  if (!pelContainer || !umumContainer) return;
   const countText = document.querySelector("[data-catalog-count]");
   const emptyState = document.querySelector("[data-catalog-empty]");
 
   loadBookInventory()
     .then((books) => {
-      container.innerHTML = "";
+      pelContainer.innerHTML = "";
+      umumContainer.innerHTML = "";
+
       const sorted = [...books].sort((a, b) => String(a.kode || "").localeCompare(String(b.kode || "")));
-      sorted.forEach((book) => {
-        const badge = stockBadge(book.stok);
+      const pelajaran = sorted.filter((b) => normalizeCategory(b.kategori) === "pelajaran");
+      const umum = sorted.filter((b) => normalizeCategory(b.kategori) === "umum");
+
+      const renderRow = (html, target) => {
         const row = document.createElement("div");
         row.className = "table-row";
-        row.innerHTML = `
+        row.innerHTML = html;
+        target.appendChild(row);
+      };
+
+      pelajaran.forEach((book) => {
+        const badge = stockBadge(book.stok);
+        renderRow(
+          `
+          <span>${book.kode || "-"}</span>
+          <span>${book.judul}</span>
+          <span>${book.kelas || "-"}</span>
+          <span>${book.stok}</span>
+          <span class="${badge.cls}">${badge.text}</span>
+        `,
+          pelContainer
+        );
+      });
+
+      umum.forEach((book) => {
+        const badge = stockBadge(book.stok);
+        renderRow(
+          `
           <span>${book.judul}</span>
           <span>${categoryLabel(book.kategori)}</span>
           <span>${book.stok}</span>
           <span class="${badge.cls}">${badge.text}</span>
-        `;
-        container.appendChild(row);
+        `,
+          umumContainer
+        );
       });
-      if (countText) countText.textContent = `Menampilkan ${books.length} buku.`;
-      if (emptyState) emptyState.classList.toggle("show", books.length === 0);
+
+      if (!pelajaran.length) {
+        pelContainer.innerHTML = '<div class="table-row muted"><span>Tidak ada buku pelajaran.</span></div>';
+      }
+      if (!umum.length) {
+        umumContainer.innerHTML = '<div class="table-row muted"><span>Tidak ada buku umum.</span></div>';
+      }
+
+      if (countText) {
+        countText.textContent = `Pelajaran: ${pelajaran.length} | Umum: ${umum.length}`;
+      }
+      if (emptyState) {
+        emptyState.classList.toggle("show", pelajaran.length + umum.length === 0);
+      }
     })
     .catch(() => {
-      container.innerHTML = '<div class="table-row muted"><span>Gagal memuat data buku.</span></div>';
+      pelContainer.innerHTML = '<div class="table-row muted"><span>Gagal memuat data buku.</span></div>';
+      umumContainer.innerHTML = '<div class="table-row muted"><span>Gagal memuat data buku.</span></div>';
       if (countText) countText.textContent = "Gagal memuat data.";
       if (emptyState) emptyState.classList.add("show");
     });
