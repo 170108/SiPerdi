@@ -141,23 +141,20 @@
           <label>Kata Sandi</label>
           <input type="password" name="password" placeholder="********" required />
           <div class="form-message" data-message="login"></div>
-          <button class="btn solid full">Masuk</button>
+          <button class="btn solid full">Login</button>
         </form>
         <p class="switch">
           Belum punya akun?
           <button type="button" class="link" data-auth-switch="signup">Sign Up</button>
         </p>
         <p class="switch">
-          Belum verifikasi?
-          <button type="button" class="link" data-auth-switch="verify">Verifikasi Email</button>
         </p>
       </div>
       <div class="auth-panel hidden" data-auth-panel="signup">
-        <h3>Daftar Akun <span data-role-label> Siswa</span></h3>
+        <h3>Daftarkan Akun <span data-role-label> Siswa</span></h3>
         <p class="sub" data-role-desc>Isi data sesuai identitas agar akun tervalidasi.</p>
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
-          <button type="button" class="role-btn" data-role="admin">Admin</button>
         </div>
         <form class="form" data-form="signup">
           <input type="hidden" name="role" value="student" />
@@ -167,12 +164,7 @@
             <label>NIS</label>
             <input type="text" name="nis" placeholder="0000000000" />
             <label>Kelas</label>
-            <input type="text" name="kelas" placeholder="XI RPL 2" />
-          </div>
-          <div data-role-fields="admin" class="hidden">
-            <label>Kode Admin</label>
-            <input type="text" name="admin_code" placeholder="Masukkan kode admin" />
-            <p class="sub">Kode demo: 024</p>
+            <input type="text" name="kelas" placeholder="XI TJKT A" />
           </div>
           <label>Email</label>
           <input type="email" name="email" placeholder="nama@sekolah.id" required />
@@ -187,11 +179,9 @@
         </p>
       </div>
       <div class="auth-panel hidden" data-auth-panel="verify">
-        <h3>Verifikasi Email</h3>
-        <p class="sub">Masukkan kode verifikasi yang dikirim ke email.</p>
         <form class="form" data-form="verify">
           <label>Email</label>
-          <input type="email" name="email" placeholder="nama@sekolah.id" required />
+          <input type="email" name="email" placeholder="Zaydan01@gmail.com" required />
           <label>Kode Verifikasi</label>
           <input type="text" name="code" placeholder="6 digit kode" required />
           <div class="form-message" data-message="verify"></div>
