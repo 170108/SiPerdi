@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sejarah Perpustakaan | SiPerdi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/app.css" />
+  <style>
+    :root {
+      --ink: #0c0c15;
+      --rose: #ff5c8d;
+      --amber: #ffcc70;
+      --sky: #8ae5ff;
+      --glass: rgba(255, 255, 255, 0.16);
+    }
+    body.history-page {
+      font-family: 'Sora', system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, #ffe7f2 0, #fde3ff 22%, transparent 40%),
+                  radial-gradient(circle at 80% 0%, #dff6ff 0, #d9f3ff 30%, transparent 55%),
+                  linear-gradient(135deg, #120f35 0%, #0f0a1f 35%, #0b1a2d 70%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    /* Ambient orbs */
+    .orbs span {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.8;
+      mix-blend-mode: screen;
+    }
+    .orbs .orb-1 { width: 320px; height: 320px; background: #ff6b6b; top: -40px; left: -60px; }
+    .orbs .orb-2 { width: 280px; height: 280px; background: #6cd4ff; top: 10%; right: 5%; }
+    .orbs .orb-3 { width: 380px; height: 380px; background: #ffc857; bottom: -120px; left: 25%; }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+    }
+    .topbar {
+      background: linear-gradient(120deg, rgba(10, 12, 26, 0.94), rgba(16, 22, 44, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32);
+      margin: 0 0 18px;
+      border-radius: 0 0 18px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+    .brand-title {
+      color: #f8fbff;
+      font-weight: 700;
+      font-size: 20px;
+      text-decoration: none;
+    }
+    .brand-subtitle { color: #c9d6ff; }
+    .topnav a {
+      color: #f7f9ff;
+      border-color: rgba(255, 255, 255, 0.26);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .topnav a:hover {
+      border-color: #fff;
+      background: rgba(255,255,255,0.16);
+    }
+
+    .hero {
+      position: relative;
+      padding: 64px 6vw 36px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      align-items: center;
+      color: #0a0d1a;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', 'Sora', serif;
+      font-size: clamp(38px, 4.6vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      color: #0b0f1f;
+      text-shadow: 0 8px 24px rgba(255,255,255,0.2), 0 12px 28px rgba(0,0,0,0.25);
+    }
+    .hero p {
+      max-width: 560px;
+      color: #132038;
+      font-size: 17px;
+      margin-bottom: 12px;
+      text-shadow: 0 6px 18px rgba(255,255,255,0.18), 0 8px 22px rgba(0,0,0,0.18);
+    }
+    .ribbon {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0f142c, #121a38);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f4f7ff;
+      margin-bottom: 18px;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.24);
+    }
+    .ribbon .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff6b9c, #ffd36f);
+      box-shadow: 0 0 0 8px rgba(255, 108, 169, 0.14);
+    }
+    .hero-card {
+      position: relative;
+      padding: 28px;
+      color: #0e1222;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(255,255,255,0.94), rgba(255,255,255,0.78));
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+      border-radius: 22px;
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40% 20% 40% -20%;
+      background: radial-gradient(circle, rgba(255,92,141,0.25), transparent 50%);
+      transform: rotate(8deg);
+    }
+    .hero-card h3 { margin: 0 0 10px; font-size: 22px; }
+    .hero-card p { margin: 0 0 14px; color: #3b425d; }
+    .quote {
+      padding: 14px 16px;
+      border-left: 4px solid #ff5c8d;
+      background: rgba(255, 108, 169, 0.08);
+      border-radius: 10px;
+      font-weight: 600;
+      color: #1f2435;
+    }
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(11,16,35,0.95), rgba(12,18,42,0.9));
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 13px;
+      font-weight: 700;
+      color: #eef2ff;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.26);
+    }
+
+    .section {
+      padding: 28px 6vw;
+    }
+    .timeline-block {
+      background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.6));
+      border-radius: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.16);
+      margin: 6px 4vw;
+      padding: 28px 3vw;
+    }
+    .stories-block {
+      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(250,252,255,0.72));
+      border-radius: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.14);
+      margin: 6px 4vw;
+    }
+    .gallery-block {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0c0f24, #0f162d);
+      border-radius: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+      margin: 6px 4vw 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .gallery-block::before {
+      content: "";
+      position: absolute;
+      inset: -20% -10% 55% -10%;
+      background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.25), transparent 50%),
+                  radial-gradient(circle at 80% 30%, rgba(255,220,120,0.18), transparent 45%);
+      pointer-events: none;
+    }
+    .gallery-block h2 {
+      position: relative;
+      display: inline-block;
+      color: #ffffff !important;
+      text-shadow: 0 0 18px rgba(255,255,255,0.48), 0 14px 36px rgba(0,0,0,0.45);
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.55));
+    }
+    .gallery-block p.lead {
+      position: relative;
+      color: #ffffff !important;
+      font-weight: 700;
+      text-shadow: 0 0 14px rgba(255,255,255,0.35), 0 12px 28px rgba(0,0,0,0.34);
+      filter: drop-shadow(0 0 7px rgba(255,255,255,0.45));
+    }
+    .section h2 {
+      font-family: 'Playfair Display', 'Sora', serif;
+      color: #0c1024;
+      margin-bottom: 10px;
+      font-size: clamp(28px, 3vw, 36px);
+      text-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    .section p.lead {
+      color: #1f2740;
+      max-width: 720px;
+      margin-bottom: 22px;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .era {
+      position: relative;
+      padding: 18px 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(12,16,36,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,247,255,0.9));
+      color: #0f172a;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+    .era::after {
+      content: "";
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,92,141,0.16), transparent 60%);
+      bottom: -30px;
+      right: -10px;
+    }
+    .era small {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #ffe7f2;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #b12d5f;
+    }
+    .era h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      color: #0d1530;
+    }
+    .era p {
+      margin: 0;
+      color: #24324c;
+      line-height: 1.55;
+    }
+
+    .stat-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .stat {
+      padding: 16px;
+      border-radius: 14px;
+      background: linear-gradient(170deg, rgba(16,20,44,0.92), rgba(10,14,30,0.92));
+      color: #f2f6ff;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+    }
+    .stat strong { display: block; font-size: 26px; margin-bottom: 4px; }
+    .stat span { color: #d4dcff; }
+
+    .stories {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }
+    .story-card {
+      padding: 22px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(15,19,38,0.92), rgba(9,12,26,0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e9efff;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .story-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255,92,141,0.2), transparent 45%),
+                  radial-gradient(circle at 80% 80%, rgba(138,229,255,0.2), transparent 50%);
+      opacity: 0.8;
+    }
+    .story-card h3 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 10px;
+      font-size: 20px;
+      color: #f7f9ff;
+    }
+    .story-card p {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 12px;
+      color: #cfd9ff;
+      line-height: 1.6;
+    }
+    .story-chip {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #f6f8ff;
+      font-weight: 600;
+    }
+    .cta {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: linear-gradient(120deg, #ff6b9c, #ffcc70);
+      color: #0c0c15;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 14px 35px rgba(255,108,169,0.35);
+      text-decoration: none;
+    }
+    .cta:hover { transform: translateY(-1px); }
+
+    /* Galeri */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .gallery-card {
+      position: relative;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(200deg, rgba(255,255,255,0.9), rgba(228,234,255,0.92));
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #0d1428;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.22);
+      overflow: hidden;
+    }
+    .gallery-card h4 { margin: 0 0 8px; color: #0b152d; }
+    .gallery-card p { margin: 0 0 10px; color: #1b2642; font-weight: 600; }
+    .gallery-card svg {
+      width: 100%;
+      height: 140px;
+      border-radius: 12px;
+      background: #0b1024;
+      padding: 10px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .badge-accent {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #11162e, #0a0e24);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-weight: 700;
+      color: #f6f8ff;
+      font-size: 13px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+    }
+
+    .footer-note {
+      padding: 40px 6vw 60px;
+      color: #cfd6ff;
+      text-align: center;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+    }
+
+    @media (max-width: 960px) {
+      .hero, .stories { grid-template-columns: 1fr; }
+      .hero { padding-top: 68px; }
+      .topbar { position: sticky; }
+    }
+  </style>
+</head>
+<body class="history-page">
+  <div class="orbs" aria-hidden="true">
+    <span class="orb-1"></span>
+    <span class="orb-2"></span>
+    <span class="orb-3"></span>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="topbar glass">
+    <div class="brand">
+      <div class="brand-logos">
+        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" />
+        <img class="logo readify-logo" src="../img/logo%20siperdi.jpg" alt="Readify Labs" />
+      </div>
+      <div>
+        <a class="brand-title link-title" href="sejarah.html">SiPerdi - SMK Negeri 1 Cikarang Selatan</a>
+        <p class="brand-subtitle">Galeri Sejarah Perpustakaan</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Menu sejarah">
+        <a class="nav-pill" href="dashboard.html">Dashboard</a>
+        <a class="nav-pill" href="pinjam.html">Pinjam Buku</a>
+        <a class="nav-pill" href="profil.html">Profil</a>
+      </nav>
+      <div class="session">
+        <span class="session-name">Eksplorasi</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div>
+      <div class="ribbon"><span class="dot"></span> Jejak pengetahuan manusia</div>
+      <h1>Dari papirus, manuskrip, sampai perpustakaan digital</h1>
+      <p>Perjalanan panjang perpustakaan adalah kisah bagaimana manusia mengawetkan ilmu dari api obor Alexandria hingga cahaya layar yang kita pegang hari ini.</p>
+      <div class="badge-row">
+        <span class="badge">4000 SM — Arsip Sumeria</span>
+        <span class="badge">Abad ke-9 — Bayt al-Hikmah</span>
+        <span class="badge">1811 — Perpustakaan Nasional</span>
+        <span class="badge">2020-an — Cloud Library</span>
+      </div>
+    </div>
+    <div class="hero-card glass">
+      <h3>“Perpustakaan adalah mesin waktu sosial.”</h3>
+      <p>Dari ribuan tablet tanah liat hingga katalog digital, perpustakaan selalu menemukan cara baru untuk membuat manusia saling terhubung lewat cerita dan pengetahuan.</p>
+      <div class="quote">Setiap rak adalah penjaga ingatan, setiap halaman adalah percikan masa depan.</div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="section timeline-block">
+    <h2>Lintasan Waktu Perpustakaan</h2>
+    <p class="lead">Ikuti timeline singkat evolusi perpustakaan: kebijaksanaan kuno, pusat terjemahan dunia, hingga gerakan perpustakaan modern dan digital.</p>
+    <div class="timeline">
+      <div class="era">
+        <small>4000–500 SM</small>
+        <h3>Tablet Sumeria & Pergamon</h3>
+        <p>Koleksi tanah liat di Mesopotamia dan gulungan papirus di Mesir jadi cikal bakal sistem katalog paling awal.</p>
+      </div>
+      <div class="era">
+        <small>Abad ke-3 SM</small>
+        <h3>Perpustakaan Alexandria</h3>
+        <p>Pusat riset Mediterania dengan ratusan ribu gulungan; mimpi manusia untuk menyatukan seluruh ilmu.</p>
+      </div>
+      <div class="era">
+        <small>Abad ke-9</small>
+        <h3>Bayt al-Hikmah, Baghdad</h3>
+        <p>Gerakan penerjemahan besar: teks Yunani, Persia, India dikaji ulang sehingga melahirkan ilmu sains dan falak modern.</p>
+      </div>
+      <div class="era">
+        <small>Abad ke-15</small>
+        <h3>Revolusi Percetakan</h3>
+        <p>Gutenberg memecah batas; buku jadi massal, perpustakaan umum tumbuh di kota-kota Eropa.</p>
+      </div>
+      <div class="era">
+        <small>Awal 1900-an</small>
+        <h3>Perpustakaan Umum Nusantara</h3>
+        <p>Dari Bataviaasch Genootschap hingga cikal Perpusnas 1811, koleksi naskah lokal diselamatkan dan dibuka untuk publik.</p>
+      </div>
+      <div class="era">
+        <small>2000–sekarang</small>
+        <h3>Digital & Cloud Library</h3>
+        <p>Metadata, ISBN, repositori terbuka, dan perpustakaan digital sekolah menjangkau siswa di mana saja.</p>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><strong>7.000+</strong><span>tahun tradisi merawat pengetahuan</span></div>
+      <div class="stat"><strong>5 benua</strong><span>perpustakaan umum besar tercatat UNESCO</span></div>
+      <div class="stat"><strong>1 klik</strong><span>akses literasi digital di SiPerdi</span></div>
+    </div>
+  </section>
+
+  <!-- Stories -->
+  <section class="section stories-block">
+    <div class="stories">
+      <div class="story-card">
+        <h3>Rak-Rak yang Berbisik</h3>
+        <p>Dahulu pustakawan mengikat gulungan papirus dengan tali berwarna, hari ini metadata dan QR code menjadi penghubung kita ke ribuan judul.</p>
+        <p>Sama seperti obor di Alexandria, layar gadget siswa adalah cahaya baru yang menuntun imajinasi.</p>
+        <span class="story-chip">“Simpan masa lalu, nyalakan masa depan.”</span>
+      </div>
+      <div class="story-card">
+        <h3>Dari Kelas ke Galaksi Digital</h3>
+        <p>Perpustakaan sekolah bukan sekadar ruang sunyi; ia jadi landasan roket menuju kompetisi global—mulai dari jurnal ilmiah sampai komik edukatif.</p>
+        <p>Dengan SiPerdi, setiap siswa punya pintu ke galaksi literasi, gratis dan tanpa antrean.</p>
+        <span class="story-chip">Perpustakaan = ruang rilis ide</span>
+      </div>
+    </div>
+    <a class="cta" href="dashboard.html">Kembali ke Dashboard & eksplor buku</a>
+  </section>
+
+  <!-- Galeri Ilustrasi -->
+  <section class="section gallery-block">
+    <h2>Galeri Visual</h2>
+    <p class="lead">Ilustrasi ringan untuk memvisualisasikan perjalanan perpustakaan: cahaya obor, rak klasik, hingga portal digital.</p>
+    <div class="gallery">
+      <div class="gallery-card">
+        <span class="badge-accent">Obor Pengetahuan</span>
+        <svg viewBox="0 0 320 140" aria-hidden="true">
+          <defs>
+            <linearGradient id="flame" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff6b6b" />
+              <stop offset="100%" stop-color="#ffcc70" />
+            </linearGradient>
+            <linearGradient id="torch" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#2c2f48" />
+              <stop offset="100%" stop-color="#11152b" />
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="320" height="140" rx="14" fill="#0f1024" />
+          <path d="M170 30c-8 12-10 22-5 31s15 12 23 6c8-6 6-18 0-27s-10-12-18-10z" fill="url(#flame)" opacity="0.9"/>
+          <path d="M150 36c-6 10-8 18-4 26s12 10 19 5c7-5 5-16 0-24s-9-10-15-7z" fill="#ff9fb2" opacity="0.8"/>
+          <rect x="150" y="66" width="24" height="54" rx="6" fill="url(#torch)" />
+          <rect x="146" y="72" width="32" height="10" rx="4" fill="#ffcc70" opacity="0.9" />
+          <circle cx="90" cy="110" r="26" fill="#1a1f36" />
+          <circle cx="240" cy="108" r="22" fill="#1a1f36" />
+          <rect x="80" y="86" width="180" height="12" rx="6" fill="#14182b" />
+        </svg>
+        <p>Obor Alexandria menginspirasi semangat berbagi ilmu yang kita lanjutkan lewat SiPerdi.</p>
+      </div>
+      <div class="gallery-card">
+        <span class="badge-accent">Rak Klasik</span>
+        <svg viewBox="0 0 320 140" aria-hidden="true">
+          <rect x="0" y="0" width="320" height="140" rx="14" fill="#101429" />
+          <rect x="34" y="22" width="252" height="12" rx="6" fill="#f9d9a4" />
+          <rect x="34" y="52" width="252" height="12" rx="6" fill="#f9d9a4" />
+          <rect x="34" y="82" width="252" height="12" rx="6" fill="#f9d9a4" />
+          <rect x="34" y="112" width="252" height="12" rx="6" fill="#f9d9a4" />
+          <rect x="60" y="30" width="26" height="80" rx="6" fill="#ff6b6b" />
+          <rect x="98" y="30" width="22" height="80" rx="6" fill="#ffd36f" />
+          <rect x="132" y="30" width="20" height="80" rx="6" fill="#7ae3ff" />
+          <rect x="162" y="30" width="28" height="80" rx="6" fill="#c9d5ff" />
+          <rect x="198" y="30" width="22" height="80" rx="6" fill="#8be28b" />
+          <rect x="228" y="30" width="26" height="80" rx="6" fill="#ff9fb2" />
+        </svg>
+        <p>Rak kayu klasik melambangkan kehangatan ruang baca fisik yang tetap kita cintai.</p>
+      </div>
+      <div class="gallery-card">
+        <span class="badge-accent">Portal Digital</span>
+        <svg viewBox="0 0 320 140" aria-hidden="true">
+          <defs>
+            <radialGradient id="portal" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#8ae5ff" />
+              <stop offset="50%" stop-color="#6c9bff" />
+              <stop offset="100%" stop-color="#120f35" />
+            </radialGradient>
+          </defs>
+          <rect x="0" y="0" width="320" height="140" rx="14" fill="#0c0f24" />
+          <circle cx="160" cy="70" r="62" fill="url(#portal)" opacity="0.9" />
+          <rect x="96" y="38" width="128" height="64" rx="10" fill="#0f132a" stroke="#8ae5ff" stroke-width="3" />
+          <rect x="114" y="52" width="90" height="4" rx="2" fill="#8ae5ff" />
+          <rect x="114" y="64" width="70" height="4" rx="2" fill="#ffcc70" />
+          <rect x="114" y="76" width="82" height="4" rx="2" fill="#ff6b6b" />
+          <circle cx="238" cy="32" r="6" fill="#ff6b6b" />
+          <circle cx="244" cy="102" r="8" fill="#ffd36f" />
+        </svg>
+        <p>Dari katalog kartu ke portal daring: metadata, ISBN, dan cloud membuat akses ilmu hanya sejauh satu klik.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    Dibuat khusus untuk SiPerdi – SMK Negeri 1 Cikarang Selatan. Semoga halaman ini jadi kilas balik yang membuat siapa pun jatuh cinta lagi pada perpustakaan.
+  </div>
+</body>
+</html>

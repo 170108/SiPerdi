@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home Admin | SiPerdi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-page-role="admin">
+  <div class="ambient"></div>
+
+  <!-- Header / Navbar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logos">
+        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" data-logo-view="../img/SMK.PNG" />
+        <img class="logo readify-logo" src="../img/logo%20siperdi.jpg" alt="Readify Labs" data-logo-view="../img/logo%20siperdi.jpg" />
+      </div>
+      <div>
+        <span class="brand-title link-title">Admin SiPerdi - SMK Negeri 1 Cikarang Selatan</span>
+        <p class="brand-subtitle">Home Admin</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Menu admin">
+        <a class="nav-pill active" href="home.html">Home</a>
+        <a class="nav-pill" href="dashboard.html">Dashboard Admin</a>
+        <a class="nav-pill" href="kelola-siswa.html">Kelola Siswa</a>
+        <a class="nav-pill" href="kelola-buku.html">Kelola Buku</a>
+        <a class="nav-pill" href="laporan.html">Laporan</a>
+      </nav>
+      <div class="session" data-session>
+        <span class="session-name" data-session-name>Halo, Admin</span>
+        <button class="btn ghost" data-logout>Logout</button>
+      </div>
+      <button class="btn outline" data-open-auth="login-admin" data-hide-when-auth data-login-name>Login Admin</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section card hero">
+      <div class="hero-content">
+        <p class="eyebrow">Beranda Admin</p>
+        <h2>Selamat datang, <span data-session-name>Admin</span></h2>
+        <p class="sub">
+          Kelola akun siswa, data buku, dan transaksi peminjaman/pengembalian. Semua ringkasan ditarik otomatis dari data website.
+        </p>
+        <div class="hero-actions">
+          <a class="btn solid" href="kelola-buku.html">Kelola Buku</a>
+          <a class="btn ghost" href="laporan.html">Lihat Laporan</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Panduan Singkat</h2>
+        <p class="sub">Mulai dari verifikasi siswa hingga update stok buku.</p>
+      </div>
+      <div class="features">
+        <div class="feature card">
+          <h3>1. Verifikasi Akun Siswa</h3>
+          <p>Cek pendaftaran baru lalu aktifkan akun jika data valid.</p>
+          <a class="link" href="verifikasi-siswa.html">Buka Verifikasi</a>
+        </div>
+        <div class="feature card">
+          <h3>2. Kelola Buku</h3>
+          <p>Tambah judul baru, ubah stok, dan tandai ketersediaan.</p>
+          <a class="link" href="kelola-buku.html">Buka Kelola Buku</a>
+        </div>
+        <div class="feature card">
+          <h3>3. Pantau Transaksi</h3>
+          <p>Lihat peminjaman, pengembalian, serta denda berjalan.</p>
+          <a class="link" href="dashboard.html">Buka Dashboard</a>
+        </div>
+        <div class="feature card">
+          <h3>4. Laporan</h3>
+          <p>Unduh rekap peminjaman dan stok untuk pelaporan berkala.</p>
+          <a class="link" href="laporan.html">Buka Laporan</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <p class="brand-title">PT. Readify Labs</p>
+      <p class="footer-text">Innovate. Educate. Elevate.</p>
+      <p class="footer-text">Dikelola admin web untuk transformasi digital perpustakaan.</p>
+    </div>
+    <div class="footer-links">
+      <a href="home.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="kelola-siswa.html">Kelola Siswa</a>
+      <a href="kelola-buku.html">Kelola Buku</a>
+      <a href="laporan.html">Laporan</a>
+    </div>
+  </footer>
+
+  <script src="../js/app.js"></script>
+</body>
+</html>

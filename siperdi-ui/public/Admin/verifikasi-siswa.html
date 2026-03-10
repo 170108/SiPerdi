@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verifikasi Siswa | SiPerdi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-page-role="admin">
+  <div class="ambient"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logos">
+        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" />
+        <img class="logo readify-logo" src="../img/logo siperdi.jpg" alt="Readify Labs" />
+      </div>
+      <div>
+        <span class="brand-title link-title">SiPerdi - Admin</span>
+        <p class="brand-subtitle">Verifikasi Akun Siswa</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Menu admin">
+        <a class="nav-pill" href="home.html">Home</a>
+        <a class="nav-pill" href="dashboard.html">Dashboard</a>
+        <a class="nav-pill" href="kelola-siswa.html">Kelola Siswa</a>
+        <a class="nav-pill" href="kelola-buku.html">Kelola Buku</a>
+        <a class="nav-pill" href="laporan.html">Laporan</a>
+      </nav>
+      <div class="session" data-session>
+        <span class="session-name" data-session-name>Halo, Admin</span>
+        <button class="btn ghost" data-logout>Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section page-header">
+      <div class="section-title">
+        <h1>Verifikasi Akun Siswa</h1>
+        <p>Setujui pendaftaran siswa baru agar mereka bisa login.</p>
+      </div>
+    </section>
+
+    <section class="section" data-requires-auth>
+      <div class="lockable">
+        <div class="card">
+          <h3>Menunggu Persetujuan <span class="badge neutral" data-pending-count>0</span></h3>
+          <div class="table admin-students-table">
+            <div class="table-head">
+              <span>Nama</span>
+              <span>NIS</span>
+              <span>Kelas</span>
+              <span>Gender</span>
+              <span>Jurusan</span>
+              <span>Aksi</span>
+            </div>
+            <div class="table-body" data-pending-list>
+              <div class="table-row muted"><span>Memuat data...</span></div>
+            </div>
+          </div>
+          <div class="empty-state" data-pending-empty>Tidak ada pendaftaran menunggu.</div>
+          <div class="form-message" data-message="pending"></div>
+        </div>
+      </div>
+      <div class="guard">
+        <p>Silakan login sebagai admin untuk memverifikasi akun.</p>
+        <button class="btn solid" data-open-auth="login-admin">Login Admin</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer-dark">
+    <div class="footer-grid">
+      <div class="footer-brand-block">
+        <img src="../img/logo siperdi.jpg" alt="Readify Labs" class="footer-logo" />
+        <p class="brand-title">PT. Readify Labs</p>
+        <p class="footer-text">SMK Negeri 1 Cikarang Selatan</p>
+        <p class="footer-text">Jl. Cikarang Selatan, Kab. Bekasi</p>
+        <p class="footer-text">Email: admin@siperdi.my.id</p>
+        <p class="footer-text">Telepon: 021-0000-000</p>
+      </div>
+      <div>
+        <p class="footer-heading">COMPANY</p>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Media Kit</a>
+        <a href="#">Karier</a>
+      </div>
+      <div>
+        <p class="footer-heading">LAYANAN</p>
+        <a href="kelola-buku.html">Katalog & Stok Buku</a>
+        <a href="kelola-siswa.html">Kelola Siswa</a>
+        <a href="laporan.html">Laporan Perpustakaan</a>
+      </div>
+      <div>
+        <p class="footer-heading">SUPPORT</p>
+        <a href="#">Status Sistem</a>
+        <a href="#">Buka Tiket Admin</a>
+      </div>
+      <div>
+        <p class="footer-heading">OTHERS</p>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat Layanan</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/app.js"></script>
+</body>
+</html>

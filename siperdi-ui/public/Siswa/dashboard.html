@@ -3,11 +3,55 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pinjam Buku | SiPerdi</title>
+  <title>Dashboard Siswa | SiPerdi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/app.css" />
+  <style>
+    /* Mini styling khusus alur peminjaman */
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      align-items: stretch;x`
+    }
+    .flow-steps .step {
+      display: flex !important;
+      flex-direction: column;
+      width: 100% !important;
+      height: 100%;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff, #f4f7ff);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+      border: 1px solid rgba(12, 26, 75, 0.06);
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff6b9c, #ffcc70);
+      color: #0d0f1c;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(255,108,169,0.35);
+    }
+    .step-title {
+      margin: 10px 0 6px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f162d;
+    }
+    .step-desc {
+      margin: 0;
+      color: #2a3550;
+      line-height: 1.5;
+      font-weight: 500;
+      flex: 1;
+    }
+  </style>
 </head>
 <body data-page-role="student">
   <div class="ambient"></div>
@@ -21,13 +65,13 @@
       </div>
       <div>
         <a class="brand-title link-title" href="sejarah.html">SiPerdi - SMK Negeri 1 Cikarang Selatan</a>
-        <p class="brand-subtitle">Pinjam Buku</p>
+        <p class="brand-subtitle">Dashboard Siswa</p>
       </div>
     </div>
     <div class="topbar-actions">
       <nav class="topnav" aria-label="Menu siswa">
-        <a class="nav-pill" href="dashboard.html">Dashboard Siswa</a>
-        <a class="nav-pill active" href="pinjam.html">Pinjam Buku</a>
+        <a class="nav-pill active" href="dashboard.html">Dashboard Siswa</a>
+        <a class="nav-pill" href="pinjam.html">Pinjam Buku</a>
         <a class="nav-pill" href="profil.html">Profil</a>
         <a class="nav-pill" href="ketentuan.html">Ketentuan</a>
       </nav>
@@ -44,63 +88,109 @@
     <!-- Judul Halaman -->
     <section class="section page-header">
       <div class="section-title">
-        <h1>Form Peminjaman Buku</h1>
-        <p>Isi data peminjaman agar tercatat otomatis oleh admin perpustakaan.</p>
+        <h1>Dashboard Siswa</h1>
+        <p>Ringkasan peminjaman, notifikasi jatuh tempo, dan histori transaksi.</p>
       </div>
     </section>
 
-    <!-- Form + Daftar Peminjaman -->
-    <section class="section" data-requires-auth>
+    <!-- Ringkasan Peminjaman -->
+    <section class="section dashboard" data-requires-auth>
       <div class="lockable">
-        <div class="loan-grid">
-          <div class="card form-card">
-            <h3>Ajukan Peminjaman</h3>
-            <p class="sub">Isi & lengkapi data buku yang akan dipinjam dengan benar.</p>
-            <form class="form" data-loan-form>
-              <label>Judul Buku</label>
-              <input class="input" type="text" name="judul" placeholder="Contoh: Pemrograman Dasar" required />
-              <label>Kode Buku</label>
-              <input class="input" type="text" name="kode" placeholder="092/B/CIKSEL/2026" required />
-              <label>Kategori</label>
-              <input class="input" type="text" name="kategori" placeholder="Jurusan" required />
-              <div class="form-row">
-                <div>
-                  <label>Tanggal Pinjam</label>
-                  <input class="input" type="date" name="tanggal" required />
-                </div>
-                <div>
-              <label>Durasi (hari)</label>
-              <input class="input" type="number" name="durasi" min="1" max="7" value="7" required />
-                </div>
-              </div>
-              <label>Perkiraan Tanggal Kembali</label>
-              <input class="input" type="date" name="kembali" readonly />
-              <div class="form-message" data-message="loan"></div>
-              <button class="btn solid full">Ajukan Peminjaman</button>
-            </form>
-          </div>
-
+        <div class="dashboard-grid">
           <div class="card">
-            <h3>Daftar Pengajuan</h3>
-            <p class="sub">Status peminjaman yang sedang diproses.</p>
-            <div class="table mini loan-table">
-              <div class="table-head">
-                <span>Judul</span>
-                <span>Pinjam</span>
-                <span>Jatuh Tempo</span>
-                <span>Status</span>
-                <span>Aksi</span>
-              </div>
-              <div class="table-body" data-loan-list></div>
-            </div>
-            <div class="empty-state" data-loan-empty>Belum ada pengajuan peminjaman.</div>
-            <div class="form-message" data-message="loan-list"></div>
+            <h3>Ringkasan Peminjaman</h3>
+            <ul class="list">
+              <li><span>Total buku dipinjam</span><strong data-student-total>0</strong></li>
+              <li><span>Jatuh tempo</span><strong data-student-due>0</strong></li>
+              <li><span>Denda Aktif</span><strong data-student-fine>Rp 0</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Status Jatuh Tempo</h3>
+            <p class="sub">Pantau buku yang akan jatuh tempo.</p>
+            <div class="notice" data-next-due>Belum ada peminjaman aktif.</div>
+            <ul class="list">
+              <li><span>Peminjaman aktif</span><strong data-loan-active>0</strong></li>
+              <li><span>Jatuh tempo dekat</span><strong data-loan-due>0</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Notifikasi Siswa</h3>
+            <div class="notice-stack" data-student-notices></div>
+            <div class="empty-state show" data-student-empty>Belum ada notifikasi.</div>
           </div>
         </div>
       </div>
       <div class="guard">
-        <p>Silakan login terlebih dahulu untuk mengajukan peminjaman buku.</p>
+        <p>Silakan login terlebih dahulu untuk melihat dashboard siswa.</p>
         <button class="btn solid" data-open-auth="login">Masuk</button>
+      </div>
+    </section>
+
+    <!-- Riwayat Peminjaman -->
+    <section class="section" data-requires-auth>
+      <div class="section-title">
+        <h2>Riwayat Peminjaman</h2>
+        <p>Daftar histori peminjaman dan pengembalian buku.</p>
+      </div>
+      <div class="lockable">
+        <div class="history-list" data-history-list></div>
+        <div class="empty-state show" data-history-empty>Belum ada riwayat peminjaman.</div>
+      </div>
+    </section>
+
+    <!-- Alur Peminjaman Buku -->
+    <section class="section" id="alur-peminjaman">
+      <div class="section-title">
+        <h2>Alur Peminjaman Buku</h2>
+        <p>Ikuti langkah ringkas ini supaya proses pinjam buku rapi dan cepat.</p>
+      </div>
+      <div class="flow-steps">
+        <div class="step">
+          <span class="step-badge">1 • Login / Daftar</span>
+          <p class="step-title">Masuk dengan akun siswa</p>
+          <p class="step-desc">Gunakan NIS & kata sandi. Belum punya akun? Daftar di halaman Sign Up siswa.</p>
+        </div>
+        <div class="step">
+          <span class="step-badge">2 • Pilih Judul</span>
+          <p class="step-title">Cari di menu Pinjam Buku</p>
+          <p class="step-desc">Cek stok, baca deskripsi singkat, lalu klik “Ajukan Peminjaman”.</p>
+        </div>
+        <div class="step">
+          <span class="step-badge">3 • Lengkapi Form</span>
+          <p class="step-title">Atur tanggal & catatan</p>
+          <p class="step-desc">Isi tanggal pinjam/kembali, tambahkan catatan bila perlu, lalu kirim.</p>
+        </div>
+        <div class="step">
+          <span class="step-badge">4 • Ambil di Petugas</span>
+          <p class="step-title">Tunjukkan bukti pengajuan</p>
+          <p class="step-desc">Datang ke meja pustakawan, verifikasi, lalu ambil buku yang disetujui.</p>
+        </div>
+        <div class="step">
+          <span class="step-badge">5 • Pantau Status</span>
+          <p class="step-title">Cek di dashboard</p>
+          <p class="step-desc">Lihat status peminjaman, jatuh tempo, dan kembalikan tepat waktu.</p>
+        </div>
+      </div>
+    </section>
+        <div class="card">
+          <h3>Jam Operasional</h3>
+          <ul class="list">
+            <li>Senin - Kamis: <strong>08.00 – 15.30</strong></li>
+            <li>Jumat: <strong>07.00 – 14.30</strong></li>
+            <li>Sabtu: <strong>09.00 – 12.00</strong> (layanan terbatas)</li>
+            <li>Drop-box pengembalian: <strong>24 jam</strong> di lobby.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Layanan & Kontak</h3>
+          <ul class="list">
+            <li>Konsultasi literasi digital: <strong>Rabu 10.00 – 12.00</strong></li>
+            <li>Reservasi ruang diskusi: <strong>H-3</strong> via petugas.</li>
+            <li>WhatsApp: <strong>0812-0000-1234</strong></li>
+            <li>Email: <strong>admin@siperdi.my.id</strong></li>
+          </ul>
+        </div>
       </div>
     </section>
   </main>
@@ -109,7 +199,7 @@
   <footer class="footer">
     <div>
       <p class="brand-title">PT. Readify Labs</p>
-      <p class="footer-text">Innovate. Educate. Elevate.</p>
+      <p class="footer-text">“Menghubungkan Literasi dan Teknologi”</p>
       <p class="footer-text">Dikelola admin web untuk transformasi digital perpustakaan.</p>
     </div>
     <div class="footer-links">
@@ -129,19 +219,19 @@
         <button class="tab" data-auth-tab="signup">Sign Up</button>
       </div>
       <div class="auth-panel" data-auth-panel="login">
-        <h3>Masuk Akun <span data-role-label> Siswa</span></h3>
-        <p class="sub" data-role-desc>Gunakan NIS dan kata sandi.</p>
+        <h3>Login Akun <span data-role-label> Siswa</span></h3>
+        <p class="sub" data-role-desc>Gunakan NIS dan buat kata sandi.</p>
         <div class="role-switch" data-role-switch>
           <button type="button" class="role-btn active" data-role="student">Siswa</button>
         </div>
         <form class="form" data-form="login">
           <input type="hidden" name="role" value="student" />
           <label data-login-label>NIS</label>
-          <input type="text" name="email" placeholder="123456" required data-login-input inputmode="numeric" />
+          <input type="text" name="email" placeholder="2324xxxx" required data-login-input inputmode="numeric" />
           <label>Kata Sandi</label>
           <input type="password" name="password" placeholder="********" required />
           <div class="form-message" data-message="login"></div>
-          <button class="btn solid full">Masuk</button>
+          <button class="btn solid full">Login</button>
         </form>
         <p class="switch">
           Belum punya akun?
@@ -160,7 +250,7 @@
           <input type="text" name="name" placeholder="Nama Lengkap" required />
           <div data-role-fields="student">
             <label>NIS</label>
-            <input type="text" name="nis" placeholder="0000000000" />
+            <input type="text" name="nis" placeholder="2324xxxx" />
             <label>Jenis Kelamin</label>
             <select name="gender" required>
               <option value="">Pilih</option>
@@ -177,10 +267,10 @@
               <option value="TP">TP</option>
             </select>
             <label>Kelas</label>
-            <input type="text" name="kelas" placeholder="XI RPL 2" />
+            <input type="text" name="kelas" placeholder="XI A />
           </div>
           <label>Email</label>
-          <input type="email" name="email" placeholder="nama@sekolah.id" required />
+          <input type="email" name="email" placeholder="nama@gmail.com" required />
           <label>Kata Sandi</label>
           <input type="password" name="password" placeholder="Minimal 8 karakter" minlength="8" required />
           <div class="form-message" data-message="signup"></div>
@@ -192,15 +282,11 @@
         </p>
       </div>
       <div class="auth-panel hidden" data-auth-panel="verify">
-        <h3>Verifikasi Email</h3>
-        <p class="sub">Masukkan kode verifikasi yang dikirim ke email.</p>
         <form class="form" data-form="verify">
           <label>Email</label>
           <input type="email" name="email" placeholder="nama@sekolah.id" required />
-          <label>Kode Verifikasi</label>
           <input type="text" name="code" placeholder="6 digit kode" required />
           <div class="form-message" data-message="verify"></div>
-          <button class="btn solid full">Verifikasi</button>
         </form>
         <p class="switch">
           Kembali ke login?

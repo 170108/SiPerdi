@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ketentuan Perpustakaan | SiPerdi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/app.css" />
+  <style>
+    body {
+      background: radial-gradient(circle at 20% 20%, #ffe6f1 0, #fde7ff 22%, transparent 40%),
+                  radial-gradient(circle at 80% 0%, #dff6ff 0, #d9f3ff 35%, transparent 55%),
+                  linear-gradient(135deg, #fdf5ff, #f7f2ff 48%, #fbeff6 70%);
+      color: #0c0f1a;
+    }
+    .ketentuan-hero {
+      margin: 18px;
+      padding: 28px;
+      border-radius: 20px;
+      background: linear-gradient(120deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75));
+      border: 1px solid rgba(12, 15, 30, 0.06);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.12);
+    }
+    .ketentuan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .card-glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(246,248,255,0.92));
+      border: 1px solid rgba(12,15,30,0.06);
+      box-shadow: 0 18px 32px rgba(0,0,0,0.12);
+      border-radius: 18px;
+      padding: 18px;
+      color: #0f162d;
+      backdrop-filter: blur(10px);
+    }
+    .card-glass h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #0c1024;
+    }
+    .card-glass ul {
+      margin: 0;
+      padding-left: 16px;
+      line-height: 1.6;
+      color: #1f2a45;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff6b9c, #ffcc70);
+      color: #0f0f1f;
+      font-weight: 700;
+      box-shadow: 0 10px 26px rgba(255,108,169,0.35);
+    }
+    .section-title h2 { color: #0b0f1f; }
+    .section-title p { color: #1e2943; }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <header class="topbar glass">
+    <div class="brand">
+      <div class="brand-logos">
+        <img class="logo school-logo" src="../img/SMK.PNG" alt="SMK Negeri 1 Cikarang Selatan" />
+        <img class="logo readify-logo" src="../img/logo%20siperdi.jpg" alt="Readify Labs" />
+      </div>
+      <div>
+        <a class="brand-title link-title" href="dashboard.html">SiPerdi - SMK Negeri 1 Cikarang Selatan</a>
+        <p class="brand-subtitle">Ketentuan & Tata Tertib</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Menu siswa">
+        <a class="nav-pill" href="dashboard.html">Dashboard Siswa</a>
+        <a class="nav-pill" href="pinjam.html">Pinjam Buku</a>
+        <a class="nav-pill" href="profil.html">Profil</a>
+        <a class="nav-pill active" href="ketentuan.html">Ketentuan</a>
+      </nav>
+      <div class="session" data-session>
+        <span class="session-name" data-session-name>Halo, Siswa</span>
+        <button class="btn ghost" data-logout>Logout</button>
+      </div>
+      <button class="btn outline" data-open-auth="login" data-hide-when-auth data-login-name>Login</button>
+      <button class="btn solid" data-open-auth="signup-student" data-hide-when-auth>Daftar Siswa</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="ketentuan-hero">
+      <span class="pill">Peraturan & Tata Tertib</span>
+      <h1 style="margin:14px 0 8px;">Ketentuan Perpustakaan SiPerdi</h1>
+      <p style="color:#0f152d; max-width:720px; font-weight:600;">
+        Ikuti panduan ini supaya pengalaman membaca nyaman, aman, dan tertib.
+        Semua aturan diselaraskan dengan kebijakan perpustakaan SMKN 1 Cikarang Selatan.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Ketentuan Umum</h2>
+        <p>Hal dasar yang wajib ditaati semua pengunjung perpustakaan.</p>
+      </div>
+      <div class="ketentuan-grid">
+        <div class="card-glass">
+          <h3>Syarat Masuk</h3>
+          <ul>
+            <li>Wajib membawa Kartu Anggota Perpustakaan (untuk absen, pinjam, perpanjang, dan pengembalian).</li>
+            <li>Tidak diperkenankan meminjamkan kartu kepada orang lain.</li>
+            <li>Ponsel senyap, berbicara pelan, dan tetap menjaga kebersihan.</li>
+          </ul>
+        </div>
+        <div class="card-glass">
+          <h3>Etika Ruang Baca</h3>
+          <ul>
+            <li>Berpakaian rapi; lepas sepatu jika diminta di area tertentu.</li>
+            <li>Tidak membawa makanan/minuman ke area koleksi.</li>
+            <li>Kembalikan buku ke troli pengembalian (biarkan pustakawan yang merapikan rak).</li>
+          </ul>
+        </div>
+        <div class="card-glass">
+          <h3>Penegakan Aturan</h3>
+          <ul>
+            <li>Pustakawan berhak menegur atau meminta pengunjung keluar bila melanggar ketentuan.</li>
+            <li>Jaga fasilitas bersama; laporkan kerusakan segera.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Peminjaman & Pengembalian</h2>
+        <p>Alur singkat dan batasan waktu supaya koleksi tetap tersedia.</p>
+      </div>
+      <div class="ketentuan-grid">
+        <div class="card-glass">
+          <h3>Proses Peminjaman</h3>
+          <ul>
+            <li>Tunjukkan Kartu Anggota saat peminjaman.</li>
+            <li>Maksimal 2 eksemplar per siswa.</li>
+            <li>Durasi standar: 1 minggu sejak tanggal pinjam.</li>
+          </ul>
+        </div>
+        <div class="card-glass">
+          <h3>Perpanjangan & Pengembalian</h3>
+          <ul>
+            <li>Perpanjangan bisa diajukan sebelum jatuh tempo jika stok tidak sedang dibutuhkan.</li>
+            <li>Kembalikan tepat waktu; laporkan bila buku hilang/rusak dan ganti sesuai ketentuan.</li>
+            <li>Bersihkan buku sebelum dikembalikan, pastikan bebas coretan dan lipatan.</li>
+          </ul>
+        </div>
+        <div class="card-glass">
+          <h3>Kepatuhan</h3>
+          <ul>
+            <li>Keterlambatan atau kerusakan dicatat; status “Bebas Perpus” mensyaratkan kepatuhan penuh.</li>
+            <li>Ikuti arahan pustakawan untuk kasus khusus (reservasi, buku referensi, atau titipan kelas).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

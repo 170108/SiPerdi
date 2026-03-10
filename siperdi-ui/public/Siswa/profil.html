@@ -3,11 +3,86 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pinjam Buku | SiPerdi</title>
+  <title>Profil Siswa | SiPerdi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/app.css" />
+  <style>
+    /* Nav lengket saat scroll & geser ke kanan */
+    .topbar.scrolled {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .topbar.scrolled .topbar-actions {
+      margin-left: auto;
+    }
+    .topbar.scrolled .topnav {
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Penataan kartu profil agar lebih rapih */
+    .profile-card {
+      margin-top: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 0;
+    }
+    .profile-card .profile-cover {
+      height: 140px;
+      background: linear-gradient(135deg, #e11d2f, #ff6b6b);
+      position: relative;
+    }
+    .profile-card .profile-header {
+      padding: 20px 24px 12px;
+      align-items: flex-end;
+      gap: 16px;
+    }
+    .profile-card .profile-avatar {
+      position: relative;
+      margin-top: -60px;
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      background: #fff;
+    }
+    .profile-card .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-card .profile-meta {
+      padding-bottom: 8px;
+    }
+    .profile-card .profile-stats {
+      padding: 0 24px 20px;
+    }
+
+    /* Hilangkan kolom kosong bekas rail */
+    .profile-shell {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    /* Tombol upload agar mudah diklik */
+    .profile-photo label.btn {
+      margin-top: 8px;
+    }
+    input[data-profile-upload] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+  </style>
 </head>
 <body data-page-role="student">
   <div class="ambient"></div>
@@ -21,14 +96,14 @@
       </div>
       <div>
         <a class="brand-title link-title" href="sejarah.html">SiPerdi - SMK Negeri 1 Cikarang Selatan</a>
-        <p class="brand-subtitle">Pinjam Buku</p>
+        <p class="brand-subtitle">Profil Siswa</p>
       </div>
     </div>
     <div class="topbar-actions">
       <nav class="topnav" aria-label="Menu siswa">
         <a class="nav-pill" href="dashboard.html">Dashboard Siswa</a>
-        <a class="nav-pill active" href="pinjam.html">Pinjam Buku</a>
-        <a class="nav-pill" href="profil.html">Profil</a>
+        <a class="nav-pill" href="pinjam.html">Pinjam Buku</a>
+        <a class="nav-pill active" href="profil.html">Profil</a>
         <a class="nav-pill" href="ketentuan.html">Ketentuan</a>
       </nav>
       <div class="session" data-session>
@@ -41,65 +116,105 @@
   </header>
 
   <main>
-    <!-- Judul Halaman -->
-    <section class="section page-header">
-      <div class="section-title">
-        <h1>Form Peminjaman Buku</h1>
-        <p>Isi data peminjaman agar tercatat otomatis oleh admin perpustakaan.</p>
-      </div>
-    </section>
+    <!-- Profil Siswa -->
+    <section class="section profile" data-requires-auth>
+      <div class="profile-shell lockable">
+        <div class="profile-main">
+          <div class="profile-page-header">
+            <div class="profile-page-title">
+              <h1>Profil Siswa</h1>
+              <p class="sub">Identitas siswa, statistik peminjaman, dan preferensi akun.</p>
+            </div>
+            <div class="profile-page-actions">
+            </div>
+          </div>
 
-    <!-- Form + Daftar Peminjaman -->
-    <section class="section" data-requires-auth>
-      <div class="lockable">
-        <div class="loan-grid">
-          <div class="card form-card">
-            <h3>Ajukan Peminjaman</h3>
-            <p class="sub">Isi & lengkapi data buku yang akan dipinjam dengan benar.</p>
-            <form class="form" data-loan-form>
-              <label>Judul Buku</label>
-              <input class="input" type="text" name="judul" placeholder="Contoh: Pemrograman Dasar" required />
-              <label>Kode Buku</label>
-              <input class="input" type="text" name="kode" placeholder="092/B/CIKSEL/2026" required />
-              <label>Kategori</label>
-              <input class="input" type="text" name="kategori" placeholder="Jurusan" required />
-              <div class="form-row">
-                <div>
-                  <label>Tanggal Pinjam</label>
-                  <input class="input" type="date" name="tanggal" required />
-                </div>
-                <div>
-              <label>Durasi (hari)</label>
-              <input class="input" type="number" name="durasi" min="1" max="7" value="7" required />
+          <div class="card profile-card profile-social">
+            <div class="profile-cover"></div>
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <img src="../img/avatar.svg" alt="Foto Siswa" data-profile-photo />
+              <span class="badge success">Siswa</span>
+            </div>
+              <div class="profile-meta">
+                <h3 data-profile="name">-</h3>
+                <p class="sub">Anggota Perpustakaan Digital</p>
+                <div class="profile-badges">
+                  <span class="badge neutral">Akun Aktif</span>
+                  <span class="badge">SiPerdi Member</span>
                 </div>
               </div>
-              <label>Perkiraan Tanggal Kembali</label>
-              <input class="input" type="date" name="kembali" readonly />
-              <div class="form-message" data-message="loan"></div>
-              <button class="btn solid full">Ajukan Peminjaman</button>
-            </form>
+            </div>
+            <div class="profile-stats">
+              <div>
+                <span>Total Peminjaman</span>
+                <strong data-profile-stat="total">0</strong>
+              </div>
+              <div>
+                <span>Jatuh Tempo</span>
+                <strong data-profile-stat="due">0</strong>
+              </div>
+              <div>
+                <span>Total Denda</span>
+                <strong data-profile-stat="fine">Rp 0</strong>
+              </div>
+            </div>
+            <div class="form-message" data-message="profile"></div>
           </div>
 
           <div class="card">
-            <h3>Daftar Pengajuan</h3>
-            <p class="sub">Status peminjaman yang sedang diproses.</p>
-            <div class="table mini loan-table">
-              <div class="table-head">
-                <span>Judul</span>
-                <span>Pinjam</span>
-                <span>Jatuh Tempo</span>
-                <span>Status</span>
-                <span>Aksi</span>
-              </div>
-              <div class="table-body" data-loan-list></div>
+            <div class="profile-grid">
+            <div class="profile-photo">
+              <img src="../img/avatar.svg" alt="Foto Profil" data-profile-photo />
+              <label class="btn outline small" for="profile-photo-upload">Ubah Foto</label>
+              <input id="profile-photo-upload" type="file" accept="image/*" data-profile-upload />
             </div>
-            <div class="empty-state" data-loan-empty>Belum ada pengajuan peminjaman.</div>
-            <div class="form-message" data-message="loan-list"></div>
+              <div class="profile-info">
+                <div>
+                  <span>Nama</span>
+                  <strong data-profile="name">-</strong>
+                </div>
+                <div>
+                  <span>NIS</span>
+                  <strong data-profile="nis">-</strong>
+                </div>
+                <div>
+                  <span>Kelas</span>
+                  <strong data-profile="kelas">-</strong>
+                </div>
+                <div>
+                  <span>Email</span>
+                  <strong data-profile="email">-</strong>
+                </div>
+                <div>
+                  <span>Role</span>
+                  <strong data-profile="role">Siswa</strong>
+                </div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button class="btn ghost small" type="button" data-delete-account>Hapus Akun</button>
+            </div>
+          </div>
+
+          <div class="card profile-preferences">
+            <h4>Mode web</h4>
+            <p class="sub" data-theme-status>Mode: Default.</p>
+            <div class="theme-toggle">
+              <button class="theme-option" type="button" data-theme-option="default">Default</button>
+              <button class="theme-option" type="button" data-theme-option="light">Terang</button>
+              <button class="theme-option" type="button" data-theme-option="dark">Gelap</button>
+            </div>
+          </div>
+
+          <div class="profile-about">
+            <h4>Tentang Siswa</h4>
+            <p class="sub">Gunakan profil ini untuk memantau peminjaman, jatuh tempo, dan status denda.</p>
           </div>
         </div>
       </div>
       <div class="guard">
-        <p>Silakan login terlebih dahulu untuk mengajukan peminjaman buku.</p>
+        <p>Silakan login untuk membuka profil siswa.</p>
         <button class="btn solid" data-open-auth="login">Masuk</button>
       </div>
     </section>
@@ -138,10 +253,10 @@
           <input type="hidden" name="role" value="student" />
           <label data-login-label>NIS</label>
           <input type="text" name="email" placeholder="123456" required data-login-input inputmode="numeric" />
-          <label>Kata Sandi</label>
+          <label>Buat Password</label>
           <input type="password" name="password" placeholder="********" required />
           <div class="form-message" data-message="login"></div>
-          <button class="btn solid full">Masuk</button>
+          <button class="btn solid full">Login</button>
         </form>
         <p class="switch">
           Belum punya akun?
@@ -219,5 +334,33 @@
   </div>
 
   <script src="../js/app.js"></script>
+  <script>
+    // tambahkan class scrolled saat halaman digulir agar nav pindah ke kanan atas
+    const topbar = document.querySelector('.topbar');
+    const onScroll = () => {
+      if (!topbar) return;
+      topbar.classList.toggle('scrolled', window.scrollY > 10);
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Pastikan ganti foto profil langsung update semua avatar di halaman
+    (() => {
+      const upload = document.querySelector('[data-profile-upload]');
+      const photos = document.querySelectorAll('[data-profile-photo]');
+      if (!upload || !photos.length) return;
+      upload.addEventListener('change', (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          photos.forEach((img) => {
+            img.src = reader.result;
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    })();
+  </script>
 </body>
 </html>
